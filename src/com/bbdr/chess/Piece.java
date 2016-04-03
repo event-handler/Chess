@@ -42,6 +42,10 @@ public abstract class Piece {
     // TODO investigate SparseBooleanArray.
     public static HashMap<Integer, Boolean> validMoves = new HashMap<Integer, Boolean>();
     
+    /**
+     * Gets the rank ID of the piece.
+     * @return the rank ID of the piece.
+     */
     public abstract int getRank();
     
     /**
@@ -55,23 +59,46 @@ public abstract class Piece {
         return true;
     }
     
+    /**
+     * Sets the color ID of the piece.
+     * @param color the color ID to use for this piece.
+     */
     public void setColor(int color) {
         this.color = color;
     }
     
+    /**
+     * Gets the color ID of the piece.
+     * @return the color ID of the piece.
+     */
     public int getColor() {
         return this.color;
     }
     
+    /**
+     * Moves the piece to coordinates (x, y). This method
+     * does not perform any move validation. Ensure the
+     * moves are valid before calling this method.
+     * @param x the new x-coordinate of the piece.
+     * @param y the new y-coordinate of the piece.
+     */
     public void moveTo(int x, int y) {
         position.x = x;
         position.y = y;
     }
     
+    /**
+     * Gets the color name of the piece.
+     * @return the color name of the piece.
+     */
     public String getColorName() {
         return RANK_NAMES[this.getRank()];
     }
     
+    /**
+     * Gets the rank name of the piece.
+     * @return the rank name of the piece.
+     */
     public String getRankName() {
         return COLOR_NAMES[this.getColor()];
     }
@@ -85,9 +112,9 @@ public abstract class Piece {
         // Move list: given some coordinates (x, y) relative to
         // this piece's position on the board, is there any
         // configuration that such a move will be valid?
-        // This check is used as the first validation step because
-        // it runs in O(1) time complexity.
-        
+    	// This static initializer builds a cache so that we don't
+    	// need to call the isValidMove(x, y) every time a piece
+    	// is selected etc.
         for (int x = -7; x <= 7; x++) {
             for (int y = -7; y <= 7; y++) {
                 // Test if this move is valid in any configuration.
@@ -96,10 +123,18 @@ public abstract class Piece {
         }
     }
     
+    /**
+     * Constructor for Piece.
+     * @param x the initial x-coordinate of the piece.
+     * @param y the initial y-coordinate of the piece.
+     */
     public Piece(int x, int y) {
         moveTo(x, y);
     }
     
+    /**
+     * Constructor for Piece.
+     */
     public Piece() {
         
     }
