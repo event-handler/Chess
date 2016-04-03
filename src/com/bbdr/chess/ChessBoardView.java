@@ -332,15 +332,23 @@ public class ChessBoardView extends View {
     }
 
     public ChessBoardView(Context context) {
+        // This constructor is used by our activity.
         super(context);
+        // Don't set up the initial state if we are in edit/designer mode.
         if (!this.isInEditMode()) {
+            // The init method will set variables we need that are not
+            // defined until Activity creation.
             init();
         }
     }
 
     public ChessBoardView(Context context, AttributeSet attrs) {
+        // This constructor is used by the UI designer.
         super(context, attrs);
+        // Don't set up the initial state if we are in edit/designer mode.
         if (!this.isInEditMode()) {
+            // The init method will set variables we need that are not
+            // defined until Activity creation.
             init();
         }
     }
