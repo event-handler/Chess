@@ -52,7 +52,7 @@ public abstract class Piece {
      * @return true if the piece can move to relative coordinates (relX, relY).
      */
     public static boolean isValidMove(int relX, int relY) {
-    	return true;
+        return true;
     }
     
     public void setColor(int color) {
@@ -81,21 +81,21 @@ public abstract class Piece {
         return this.getColorName() + " " + this.getRankName() + "@(" + position.toString() + ")";
     }
     
-	static {
-		// Move list: given some coordinates (x, y) relative to
-		// this piece's position on the board, is there any
-		// configuration that such a move will be valid?
-		// This check is used as the first validation step because
-		// it runs in O(1) time complexity.
-		
-		for (int x = -7; x <= 7; x++) {
-			for (int y = -7; y <= 7; y++) {
-				// Test if this move is valid in any configuration.
-				validMoves.put(Position.getRelativeOffset(x, y), isValidMove(x, y));
-			}
-		}
-	}
-	
+    static {
+        // Move list: given some coordinates (x, y) relative to
+        // this piece's position on the board, is there any
+        // configuration that such a move will be valid?
+        // This check is used as the first validation step because
+        // it runs in O(1) time complexity.
+        
+        for (int x = -7; x <= 7; x++) {
+            for (int y = -7; y <= 7; y++) {
+                // Test if this move is valid in any configuration.
+                validMoves.put(Position.getRelativeOffset(x, y), isValidMove(x, y));
+            }
+        }
+    }
+    
     public Piece(int x, int y) {
         moveTo(x, y);
     }
