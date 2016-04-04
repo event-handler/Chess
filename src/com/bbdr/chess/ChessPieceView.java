@@ -10,13 +10,10 @@ import android.view.View;
  * In this case, the View will draw a specific bitmap
  * (Queen, King, etc.) depending on the View's state.
  */
-<<<<<<< HEAD
 /*
-=======
 
 //Currently this class prevents app from building.
 
->>>>>>> 840dc1ac9c13784318db672d01e7e7d46251167e
 public class ChessPieceView extends View {
     
     // TODO add constructors for each View constructor.
