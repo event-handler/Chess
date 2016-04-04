@@ -13,7 +13,6 @@ import android.view.View;
 /*
 
 //Currently this class prevents app from building.
-//Test comment
 public class ChessPieceView extends View {
     
     // TODO add constructors for each View constructor.
