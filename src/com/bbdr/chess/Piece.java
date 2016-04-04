@@ -56,7 +56,7 @@ public abstract class Piece {
      * @param relY the relative coordinate Y.
      * @return true if the piece can move to relative coordinates (relX, relY).
      */
-    public static boolean isValidMove(int relX, int relY) {
+    public boolean isValidMove(int relX, int relY) {
         return true;
     }
     
@@ -109,7 +109,7 @@ public abstract class Piece {
         return this.getColorName() + " " + this.getRankName() + "@(" + position.toString() + ")";
     }
     
-    public static HashMap<Integer, Boolean> getValidMoves() {
+    public HashMap<Integer, Boolean> getValidMoves() {
         // Move list: given some coordinates (x, y) relative to
         // this piece's position on the board, is there any
         // configuration that such a move will be valid?
@@ -122,12 +122,9 @@ public abstract class Piece {
             for (int y = -7; y <= 7; y++) {
                 // Test if this move is valid in any configuration.
                 map.put(Position.getRelativeOffset(x, y), isValidMove(x, y));
-                Log.d("chessfag", "Position (" + x + ", " + y + ") is " + (isValidMove(x, y) ? "" : "NOT") + " a valid move.");
             }
         }
         return map;
-    }
-    static {
     }
     
     /**

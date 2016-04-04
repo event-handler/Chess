@@ -30,9 +30,16 @@ public class ChessActivity extends Activity {
     }
     
     protected void init() {
-        Log.d("chessfag", "debug pls");
         refLayoutParams = new RelativeLayout.LayoutParams(getPixels(SIZE_TILE), getPixels(SIZE_TILE));
         
+        King k = new King();
+        for (int x = -7; x <= 7; x++) {
+            for (int y = -7; y <= 7; y++) {
+                if (k.isValidMove(x, y)) {
+                    Log.d("chessfag", "(" + x + ", " + y + ") : valid");
+                }
+            }
+        }
         // Create the board view dynamically.
         //RelativeLayout relLayout = (RelativeLayout)findViewById(R.id.chessboardLayout);
         
