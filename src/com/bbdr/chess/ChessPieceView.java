@@ -16,6 +16,7 @@ import android.view.View;
 
 public class ChessPieceView extends View {
     
+    // when will @event-handler fix this?
     // TODO add constructors for each View constructor.
     //
     // 1. Read the "Public Constructors" section @ http://developer.android.com/reference/android/view/View.html
