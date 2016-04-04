@@ -1,10 +1,15 @@
 package com.bbdr.chess;
 
 import java.util.HashMap;
+import android.util.Log;
 
 public class King extends Piece implements Moveable, Renderable {
     public boolean hasMoved = false;
     
+    static {
+        Log.d("chessfag", "abc");
+        validMoves = getValidMoves();
+    }
     /**
      * Returns whether the King can move to relative coordinates (relX, relY).
      * This method is used as the first step for move validation. Its outputs

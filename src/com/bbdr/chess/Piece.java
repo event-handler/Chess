@@ -1,6 +1,7 @@
 package com.bbdr.chess;
 
 import java.util.HashMap;
+import android.util.Log;
 
 public abstract class Piece {
     public static final int COLOR_NONE = 0;
@@ -40,7 +41,7 @@ public abstract class Piece {
     
     // A list of valid moves given any configuration.
     // TODO investigate SparseBooleanArray.
-    public static HashMap<Integer, Boolean> validMoves = new HashMap<Integer, Boolean>();
+    public static HashMap<Integer, Boolean> validMoves;
     
     /**
      * Gets the rank ID of the piece.
@@ -108,19 +109,25 @@ public abstract class Piece {
         return this.getColorName() + " " + this.getRankName() + "@(" + position.toString() + ")";
     }
     
-    static {
+    public static HashMap<Integer, Boolean> getValidMoves() {
         // Move list: given some coordinates (x, y) relative to
         // this piece's position on the board, is there any
         // configuration that such a move will be valid?
-    	// This static initializer builds a cache so that we don't
-    	// need to call the isValidMove(x, y) every time a piece
-    	// is selected etc.
+        HashMap<Integer, Boolean> map = new HashMap<Integer, Boolean>();
+        // TODO MOVE COMMENT
+        // This static initializer builds a cache so that we don't
+        // need to call the isValidMove(x, y) every time a piece
+        // is selected etc.
         for (int x = -7; x <= 7; x++) {
             for (int y = -7; y <= 7; y++) {
                 // Test if this move is valid in any configuration.
-                validMoves.put(Position.getRelativeOffset(x, y), isValidMove(x, y));
+                map.put(Position.getRelativeOffset(x, y), isValidMove(x, y));
+                Log.d("chessfag", "Position (" + x + ", " + y + ") is " + (isValidMove(x, y) ? "" : "NOT") + " a valid move.");
             }
         }
+        return map;
+    }
+    static {
     }
     
     /**

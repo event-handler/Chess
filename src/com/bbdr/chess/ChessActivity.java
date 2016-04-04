@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.util.Log;
 
 public class ChessActivity extends Activity {
     private RelativeLayout.LayoutParams refLayoutParams;
@@ -29,11 +30,13 @@ public class ChessActivity extends Activity {
     }
     
     protected void init() {
+        Log.d("chessfag", "debug pls");
         refLayoutParams = new RelativeLayout.LayoutParams(getPixels(SIZE_TILE), getPixels(SIZE_TILE));
         
         // Create the board view dynamically.
         //RelativeLayout relLayout = (RelativeLayout)findViewById(R.id.chessboardLayout);
         
+        // Set the board view.
         boardView = (ChessBoardView)findViewById(R.id.chessboardView);
         //boardView = new ChessBoardView(this);
         //relLayout.addView(boardView, new RelativeLayout.LayoutParams(refLayoutParams));

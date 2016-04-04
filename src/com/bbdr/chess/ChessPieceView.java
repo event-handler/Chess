@@ -1,3 +1,4 @@
+/*
 package com.bbdr.chess;
 
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.View;
  * In this case, the View will draw a specific bitmap
  * (Queen, King, etc.) depending on the View's state.
  */
+/*
 public class ChessPieceView extends View {
     
     // TODO add constructors for each View constructor.
@@ -27,3 +29,4 @@ public class ChessPieceView extends View {
     // and implements the same constructors that are required.
     
 }
+*/
