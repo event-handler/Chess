@@ -13,7 +13,7 @@ import android.view.View;
 /*
 
 //Currently this class prevents app from building.
-
+//Test comment
 public class ChessPieceView extends View {
     
     // when will @event-handler fix this?
