@@ -1,7 +1,5 @@
 package com.bbdr.chess;
 
-import java.util.HashMap;
-
 public class King extends Piece implements Moveable, Renderable {
     public boolean hasMoved = false;
     
@@ -16,7 +14,8 @@ public class King extends Piece implements Moveable, Renderable {
      * @param relY the y-coordinate relative to the piece.
      * @return true if the King can move to this relative location.
      */
-    public static boolean isValidMove(int relX, int relY) {
+    @Override
+    public boolean isValidMove(int relX, int relY) {
         // Valid moves for the King:
         // (1)North, (2)East, (3)South, (4)West
         // (5)Northwest, (6)Northeast, (7)Southwest, (8)Southeast.
