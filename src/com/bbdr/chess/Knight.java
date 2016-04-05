@@ -2,6 +2,7 @@ package com.bbdr.chess;
 
 public class Knight extends Piece implements Renderable, Moveable {
     
+    // One of these days someone is going to write this method.
     @Override
     public boolean canMoveTo(int x, int y) {
         // TODO
