@@ -42,7 +42,6 @@ public class ChessBoardView extends ViewGroup {
 
     public Board board = null;
 
-
     /** The amount of space used by children in the left gutter. */
     private int mLeftWidth;
 
@@ -68,8 +67,9 @@ public class ChessBoardView extends ViewGroup {
         }
         for (int i = 0; i < board.pieces.length; i++) {
             this.addView(createPieceViewForPiece(board.pieces[i]));
-            Log.d("chessfag", Integer.toString(this.getChildCount()));
         }
+        // TODO remove
+        this.invalidate();
     }
 
     /**
@@ -350,7 +350,6 @@ public class ChessBoardView extends ViewGroup {
 
     }
     
-    protected Context _context = null;
     protected ChessPieceView createPieceViewForPiece(Piece p) {
         ChessPieceView v = new ChessPieceView(this.getContext());
         // Declares the sprite to draw.
@@ -361,8 +360,8 @@ public class ChessBoardView extends ViewGroup {
         v.measure(0, 0);
         
         // Set the coordinates. (0-7) * size_of_tile
-        v.setX((int)(Math.random() * 8) * getPixels(SIZE_TILE));
-        v.setY((int)(Math.random() * 8) * getPixels(SIZE_TILE));
+        v.setX((int)(p.getX() * getPixels(SIZE_TILE)));
+        v.setY((int)(p.getY() * getPixels(SIZE_TILE)));
         return v;
     }
     
@@ -417,7 +416,6 @@ public class ChessBoardView extends ViewGroup {
         }
     }
 
-
     @Override
     public LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new ChessBoardView.LayoutParams(getContext(), attrs);
@@ -438,7 +436,6 @@ public class ChessBoardView extends ViewGroup {
         return p instanceof LayoutParams;
     }
     
-
     /**
      * Custom per-child layout information.
      */
@@ -479,7 +476,6 @@ public class ChessBoardView extends ViewGroup {
     public ChessBoardView(Context context) {
         // This constructor is used by our activity.
         super(context);
-        _context = context;
         // Don't set up the initial state if we are in edit/designer mode.
         if (!this.isInEditMode()) {
             // The init method will set variables we need that are not
@@ -491,7 +487,6 @@ public class ChessBoardView extends ViewGroup {
     public ChessBoardView(Context context, AttributeSet attrs) {
         // This constructor is used by the UI designer.
         super(context, attrs);
-        _context = context;
         // Don't set up the initial state if we are in edit/designer mode.
         if (!this.isInEditMode()) {
             // The init method will set variables we need that are not

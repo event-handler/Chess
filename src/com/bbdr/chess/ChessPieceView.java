@@ -9,7 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
-import com.bbdr.chess.Piece;
+import android.util.Log;
 
 public class ChessPieceView extends View {
     
@@ -20,7 +20,8 @@ public class ChessPieceView extends View {
     * (Queen, King, etc.) depending on the View's state.
     */
     public static final int SIZE_TILE = 35;
-    protected static Bitmap[] bitmaps = new Bitmap[13];
+    //protected static Bitmap[] bitmaps = new Bitmap[13];
+    protected static Bitmap[] bitmaps = new Bitmap[31];
     
     protected static final Matrix pieceTransMatrix = new Matrix();
     protected static final RectF rectSource = new RectF();
@@ -35,9 +36,17 @@ public class ChessPieceView extends View {
         if (this.isInEditMode()) {
             return;
         }
+        // We don't want to do anything if the piece ID
+        // does not map to a Bitmap.
+        if (pieceID == -1 || bitmaps.length < pieceID || bitmaps[pieceID] == null) {
+            return;
+        }
+        // Set the rectangle that we are drawing to.
         rectDestination.set(0F, 0F, this.getMeasuredWidth(), this.getMeasuredHeight());
+        // Construct the matrix that transforms the Bitmap into our tile area.
         pieceTransMatrix.setRectToRect(rectSource, rectDestination,
                 Matrix.ScaleToFit.END);
+        // Draw the bitmap to the canvas according to the transform matrix.
         canvas.drawBitmap(bitmaps[pieceID], pieceTransMatrix, null);
     }
 
@@ -53,6 +62,7 @@ public class ChessPieceView extends View {
     }
     
     public void setPiece(Piece piece) {
+        Log.d("chessfag2", Integer.toString(piece.getSpriteID()));
         this.setSpriteID(piece.getSpriteID());
     }
     
@@ -62,30 +72,30 @@ public class ChessPieceView extends View {
         // Store the bitmaps for later use.
         // TODO move this to another class. This is inefficient,
         // because it creates the array for each piece view.
-        bitmaps[Piece.RANK_PAWN | Piece.PLAYER_BLACK] = BitmapFactory.decodeResource(r,
-                R.drawable.pawn_black);
-        bitmaps[Piece.RANK_ROOK | Piece.PLAYER_BLACK] = BitmapFactory.decodeResource(r,
-                R.drawable.castle_black);
-        bitmaps[Piece.RANK_KNIGHT | Piece.PLAYER_BLACK] = BitmapFactory.decodeResource(r,
-                R.drawable.knight_black);
-        bitmaps[Piece.RANK_BISHOP| Piece.PLAYER_BLACK] = BitmapFactory.decodeResource(r,
-                R.drawable.bishop_black);
-        bitmaps[Piece.RANK_QUEEN| Piece.PLAYER_BLACK] = BitmapFactory.decodeResource(r,
-                R.drawable.queen_black);
-        bitmaps[Piece.RANK_KING | Piece.PLAYER_BLACK] = BitmapFactory.decodeResource(r,
-                R.drawable.king_black);
-        bitmaps[Piece.RANK_PAWN | Piece.PLAYER_WHITE] = BitmapFactory.decodeResource(r,
-                R.drawable.pawn_white);
-        bitmaps[Piece.RANK_ROOK | Piece.PLAYER_WHITE] = BitmapFactory.decodeResource(r,
-                R.drawable.castle_white);
-        bitmaps[Piece.RANK_KNIGHT | Piece.PLAYER_WHITE] = BitmapFactory.decodeResource(r,
-                R.drawable.knight_white);
-        bitmaps[Piece.RANK_BISHOP | Piece.PLAYER_WHITE] = BitmapFactory.decodeResource(r,
-                R.drawable.bishop_white);
-        bitmaps[Piece.RANK_QUEEN | Piece.PLAYER_WHITE] = BitmapFactory.decodeResource(r,
-                R.drawable.queen_white);
-        bitmaps[Piece.RANK_KING | Piece.PLAYER_WHITE] = BitmapFactory.decodeResource(r,
-                R.drawable.king_white);
+        bitmaps[(Piece.RANK_PAWN << Piece.BITS_PLAYER) | Piece.PLAYER_BLACK] =
+                BitmapFactory.decodeResource(r, R.drawable.pawn_black);
+        bitmaps[(Piece.RANK_ROOK << Piece.BITS_PLAYER) | Piece.PLAYER_BLACK] =
+                BitmapFactory.decodeResource(r, R.drawable.castle_black);
+        bitmaps[(Piece.RANK_KNIGHT << Piece.BITS_PLAYER) | Piece.PLAYER_BLACK] =
+                BitmapFactory.decodeResource(r, R.drawable.knight_black);
+        bitmaps[(Piece.RANK_BISHOP << Piece.BITS_PLAYER) | Piece.PLAYER_BLACK] =
+                BitmapFactory.decodeResource(r, R.drawable.bishop_black);
+        bitmaps[(Piece.RANK_QUEEN << Piece.BITS_PLAYER) | Piece.PLAYER_BLACK] =
+                BitmapFactory.decodeResource(r, R.drawable.queen_black);
+        bitmaps[(Piece.RANK_KING << Piece.BITS_PLAYER) | Piece.PLAYER_BLACK] =
+                BitmapFactory.decodeResource(r, R.drawable.king_black);
+        bitmaps[(Piece.RANK_PAWN << Piece.BITS_PLAYER) | Piece.PLAYER_WHITE] =
+                BitmapFactory.decodeResource(r, R.drawable.pawn_white);
+        bitmaps[(Piece.RANK_ROOK << Piece.BITS_PLAYER) | Piece.PLAYER_WHITE] =
+                BitmapFactory.decodeResource(r, R.drawable.castle_white);
+        bitmaps[(Piece.RANK_KNIGHT << Piece.BITS_PLAYER) | Piece.PLAYER_WHITE] =
+                BitmapFactory.decodeResource(r, R.drawable.knight_white);
+        bitmaps[(Piece.RANK_BISHOP << Piece.BITS_PLAYER) | Piece.PLAYER_WHITE] =
+                BitmapFactory.decodeResource(r, R.drawable.bishop_white);
+        bitmaps[(Piece.RANK_QUEEN << Piece.BITS_PLAYER) | Piece.PLAYER_WHITE] =
+                BitmapFactory.decodeResource(r, R.drawable.queen_white);
+        bitmaps[(Piece.RANK_KING << Piece.BITS_PLAYER) | Piece.PLAYER_WHITE] =
+                BitmapFactory.decodeResource(r, R.drawable.king_white);
 
         sBitmap = bitmaps[1];
         // The source rectangle does not change because we have

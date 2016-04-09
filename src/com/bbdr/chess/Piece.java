@@ -8,7 +8,7 @@ public abstract class Piece {
     // Default case.
     public static final int PLAYER_DEFAULT = PLAYER_WHITE;
     // Number of bits for PLAYER = log2(max_player_value)
-    public static final int BITS_PLAYER = (int)Math.ceil(Math.log10(PLAYER_BLACK) / Math.log10(2));
+    public static final int BITS_PLAYER = (int)Math.ceil(Math.log10(PLAYER_BLACK + 1) / Math.log10(2));
     
     public static final int RANK_PAWN = 0;
     public static final int RANK_ROOK = 1;
@@ -19,19 +19,17 @@ public abstract class Piece {
     // Default case.
     public static final int RANK_DEFAULT = RANK_PAWN;
     // Number of bits for RANK = log2(max_rank_value)
-    public static final int BITS_RANK = (int)Math.ceil(Math.log10(RANK_KING) / Math.log10(2));
-    // 7 valid ranks (None, Pawn, Rook, Knight, Bishop, Queen, King).
-    //   2 < log2(7) <= 3 -> 3 bits
-    // 3 valid ranks (None, White, Black).
-    //   1 < log2(3) <= 2 -> 2 bits
-    // Rank and player will be stored as: RRRPP.
+    public static final int BITS_RANK = (int)Math.ceil(Math.log10(RANK_KING + 1) / Math.log10(2));
+    // 6 valid ranks (Pawn, Rook, Knight, Bishop, Queen, King).
+    //   2 < log2(6) <= 3 -> 3 bits
+    // 2 valid ranks (White, Black).
+    //   1 == log2(2) -> 1 bit.
+    // Rank and player will be stored as: RRRP.
     public int getSpriteID() {
         return (getPlayer() | (getRank() << BITS_PLAYER)); 
     }
     
-    
     public static final String[] RANK_NAMES = new String[] {
-        "UNDEFINED_RANK",
         "Pawn",
         "Rook",
         "Knight",
@@ -41,7 +39,6 @@ public abstract class Piece {
     };
     
     public static final String[] PLAYER_NAMES = new String[] {
-        "UNDEFINED_PLAYER",
         "White",
         "Black"
     };
