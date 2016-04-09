@@ -352,10 +352,17 @@ public class ChessBoardView extends ViewGroup {
     
     protected Context _context = null;
     protected ChessPieceView createPieceViewForPiece(Piece p) {
-        //ChessPieceView v = new ChessPieceView(this.getContext());
-        ChessPieceView v = new ChessPieceView(_context);
-        v.setX(0.0F);
-        v.setY(0.0F);
+        ChessPieceView v = new ChessPieceView(this.getContext());
+        // Declares the sprite to draw.
+        v.setPiece(p);
+        // Set the layout parameters to set the width and height of this view. 
+        v.setLayoutParams(this.generateLayoutParams(new ViewGroup.LayoutParams(getPixels(SIZE_TILE), getPixels(SIZE_TILE))));
+        // Need to measure the piece view or it won't register that it has a width/height.
+        v.measure(0, 0);
+        
+        // Set the coordinates. (0-7) * size_of_tile
+        v.setX((int)(Math.random() * 8) * getPixels(SIZE_TILE));
+        v.setY((int)(Math.random() * 8) * getPixels(SIZE_TILE));
         return v;
     }
     
@@ -380,8 +387,8 @@ public class ChessBoardView extends ViewGroup {
             if (child.getVisibility() != GONE) {
                 final LayoutParams lp = (LayoutParams) child.getLayoutParams();
 
-                final int width = 1024;//child.getMeasuredWidth();
-                final int height = 1024;//child.getMeasuredHeight();
+                final int width = child.getMeasuredWidth();
+                final int height = child.getMeasuredHeight();
 
                 // Compute the frame in which we are placing this child.
                 if (lp.position == LayoutParams.POSITION_LEFT) {

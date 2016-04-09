@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import com.bbdr.chess.Piece;
 
 public class ChessPieceView extends View {
     
@@ -18,29 +19,15 @@ public class ChessPieceView extends View {
     * In this case, the View will draw a specific bitmap
     * (Queen, King, etc.) depending on the View's state.
     */
-   
     public static final int SIZE_TILE = 35;
     protected static Bitmap[] bitmaps = new Bitmap[13];
-    protected static final int ID_BOARD = 0;
-    protected static final int ID_WPAWN = 1;
-    protected static final int ID_WROOK = 2;
-    protected static final int ID_WKNIGHT = 3;
-    protected static final int ID_WBISHOP = 4;
-    protected static final int ID_WQUEEN = 5;
-    protected static final int ID_WKING = 6;
-    protected static final int ID_BPAWN = 7;
-    protected static final int ID_BROOK = 8;
-    protected static final int ID_BKNIGHT = 9;
-    protected static final int ID_BBISHOP = 10;
-    protected static final int ID_BQUEEN = 11;
-    protected static final int ID_BKING = 12;
-
-    Matrix pieceTransMatrix = new Matrix();
-    RectF rectSource = null;
-    RectF rectDestination = null;
+    
+    protected static final Matrix pieceTransMatrix = new Matrix();
+    protected static final RectF rectSource = new RectF();
+    protected static final RectF rectDestination = new RectF();
 
     // the view for a chess piece
-    public int pieceID = 1;
+    public int pieceID = -1;
 
     @Override
     public void onDraw(Canvas canvas) {
@@ -48,62 +35,76 @@ public class ChessPieceView extends View {
         if (this.isInEditMode()) {
             return;
         }
+        rectDestination.set(0F, 0F, this.getMeasuredWidth(), this.getMeasuredHeight());
         pieceTransMatrix.setRectToRect(rectSource, rectDestination,
                 Matrix.ScaleToFit.END);
         canvas.drawBitmap(bitmaps[pieceID], pieceTransMatrix, null);
     }
 
+    public void setSpriteID(int id) {
+        // Check that the piece ID is even different.
+        if (this.pieceID != id) {
+            // It's different. Overwrite the ID and mark this view
+            // for re-rendering.
+            this.pieceID = id;
+            this.invalidate();
+        }
+        // If it's not different, then we don't need to change anything.
+    }
+    
+    public void setPiece(Piece piece) {
+        this.setSpriteID(piece.getSpriteID());
+    }
+    
     public void init() {
         Resources r = getResources();
-        bitmaps[ID_BOARD] = BitmapFactory.decodeResource(r,
-                R.drawable.tempchessboard);
-        bitmaps[ID_BPAWN] = BitmapFactory.decodeResource(r,
+        Bitmap sBitmap = null;
+        // Store the bitmaps for later use.
+        // TODO move this to another class. This is inefficient,
+        // because it creates the array for each piece view.
+        bitmaps[Piece.RANK_PAWN | Piece.PLAYER_BLACK] = BitmapFactory.decodeResource(r,
                 R.drawable.pawn_black);
-        bitmaps[ID_BROOK] = BitmapFactory.decodeResource(r,
+        bitmaps[Piece.RANK_ROOK | Piece.PLAYER_BLACK] = BitmapFactory.decodeResource(r,
                 R.drawable.castle_black);
-        bitmaps[ID_BKNIGHT] = BitmapFactory.decodeResource(r,
+        bitmaps[Piece.RANK_KNIGHT | Piece.PLAYER_BLACK] = BitmapFactory.decodeResource(r,
                 R.drawable.knight_black);
-        bitmaps[ID_BBISHOP] = BitmapFactory.decodeResource(r,
+        bitmaps[Piece.RANK_BISHOP| Piece.PLAYER_BLACK] = BitmapFactory.decodeResource(r,
                 R.drawable.bishop_black);
-        bitmaps[ID_BQUEEN] = BitmapFactory.decodeResource(r,
+        bitmaps[Piece.RANK_QUEEN| Piece.PLAYER_BLACK] = BitmapFactory.decodeResource(r,
                 R.drawable.queen_black);
-        bitmaps[ID_BKING] = BitmapFactory.decodeResource(r,
+        bitmaps[Piece.RANK_KING | Piece.PLAYER_BLACK] = BitmapFactory.decodeResource(r,
                 R.drawable.king_black);
-        bitmaps[ID_WPAWN] = BitmapFactory.decodeResource(r,
+        bitmaps[Piece.RANK_PAWN | Piece.PLAYER_WHITE] = BitmapFactory.decodeResource(r,
                 R.drawable.pawn_white);
-        bitmaps[ID_WROOK] = BitmapFactory.decodeResource(r,
+        bitmaps[Piece.RANK_ROOK | Piece.PLAYER_WHITE] = BitmapFactory.decodeResource(r,
                 R.drawable.castle_white);
-        bitmaps[ID_WKNIGHT] = BitmapFactory.decodeResource(r,
+        bitmaps[Piece.RANK_KNIGHT | Piece.PLAYER_WHITE] = BitmapFactory.decodeResource(r,
                 R.drawable.knight_white);
-        bitmaps[ID_WBISHOP] = BitmapFactory.decodeResource(r,
+        bitmaps[Piece.RANK_BISHOP | Piece.PLAYER_WHITE] = BitmapFactory.decodeResource(r,
                 R.drawable.bishop_white);
-        bitmaps[ID_WQUEEN] = BitmapFactory.decodeResource(r,
+        bitmaps[Piece.RANK_QUEEN | Piece.PLAYER_WHITE] = BitmapFactory.decodeResource(r,
                 R.drawable.queen_white);
-        bitmaps[ID_WKING] = BitmapFactory.decodeResource(r,
+        bitmaps[Piece.RANK_KING | Piece.PLAYER_WHITE] = BitmapFactory.decodeResource(r,
                 R.drawable.king_white);
 
-        rectSource = new RectF(0F, 0F, bitmaps[1].getWidth(),
-                bitmaps[1].getHeight());
-        /*
-        rectDestination = new RectF(0F, 0F, bitmaps[1].getWidth(),
-                bitmaps[1].getHeight());
-         */
-        rectDestination = new RectF(0F, 0F, getPixels(SIZE_TILE), getPixels(SIZE_TILE));
+        sBitmap = bitmaps[1];
+        // The source rectangle does not change because we have
+        // bitmaps of the same height and width.
+        rectSource.set(0.0F, 0.0F, sBitmap.getWidth(), sBitmap.getHeight());
+        // We need to redefine the destination rectangle's bounds
+        // every redraw, but we should create the object now.
+        rectDestination.set(0.0F, 0.0F, sBitmap.getWidth(), sBitmap.getHeight());
     }
 
     protected int getPixels(int dp) {
         return (int) (getResources().getDisplayMetrics().density * dp);
-
     }
 
     @Override
     public void onMeasure(int measureWidthSpec, int measureHeightSpec) {
         // sets the measurements of the view
-        this.setMeasuredDimension(300,  300);
-        /*
         this.setMeasuredDimension(measureWidth(measureWidthSpec),
                 measureHeight(measureHeightSpec));
-         */
     }
 
     // make the piece size match tile size
