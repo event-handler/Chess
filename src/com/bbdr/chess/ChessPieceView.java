@@ -84,8 +84,11 @@ public class ChessPieceView extends View {
 
         rectSource = new RectF(0F, 0F, bitmaps[1].getWidth(),
                 bitmaps[1].getHeight());
+        /*
         rectDestination = new RectF(0F, 0F, bitmaps[1].getWidth(),
                 bitmaps[1].getHeight());
+         */
+        rectDestination = new RectF(0F, 0F, getPixels(SIZE_TILE), getPixels(SIZE_TILE));
     }
 
     protected int getPixels(int dp) {
@@ -93,11 +96,14 @@ public class ChessPieceView extends View {
 
     }
 
+    @Override
     public void onMeasure(int measureWidthSpec, int measureHeightSpec) {
         // sets the measurements of the view
+        this.setMeasuredDimension(300,  300);
+        /*
         this.setMeasuredDimension(measureWidth(measureWidthSpec),
                 measureHeight(measureHeightSpec));
-
+         */
     }
 
     // make the piece size match tile size

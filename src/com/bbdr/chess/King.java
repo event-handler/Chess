@@ -46,7 +46,7 @@ public class King extends Piece implements Moveable, Renderable {
     }
     
     @Override
-    public boolean canMoveTo(int x, int y) {
+    public boolean canMoveTo(int x, int y, Board board) {
         // TODO
         return true;
     }
@@ -59,6 +59,10 @@ public class King extends Piece implements Moveable, Renderable {
     @Override
     public int getRank() {
         return Piece.RANK_KING;
+    }
+    
+    public King(int x, int y, int player) {
+        super(x, y, player);
     }
     
     public King(int x, int y) {

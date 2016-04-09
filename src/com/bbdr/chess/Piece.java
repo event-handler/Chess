@@ -1,12 +1,11 @@
 package com.bbdr.chess;
 
 import java.util.HashMap;
-import android.util.Log;
 
 public abstract class Piece {
-    public static final int COLOR_NONE = 0;
-    public static final int COLOR_WHITE = 1;
-    public static final int COLOR_BLACK = 2;
+    public static final int PLAYER_NONE = 0;
+    public static final int PLAYER_WHITE = 1;
+    public static final int PLAYER_BLACK = 2;
     
     public static final int RANK_NONE = 0;
     public static final int RANK_PAWN = 1;
@@ -25,8 +24,8 @@ public abstract class Piece {
         "King"
     };
     
-    public static final String[] COLOR_NAMES = new String[] {
-        "UNDEFINED_COLOR",
+    public static final String[] PLAYER_NAMES = new String[] {
+        "UNDEFINED_PLAYER",
         "White",
         "Black"
     };
@@ -36,8 +35,8 @@ public abstract class Piece {
     // Current position within the board it is contained in.
     public final Position position = new Position(-1, -1);
     
-    // Piece's color.
-    public int color = COLOR_NONE;
+    // Piece's player name.
+    public int player = PLAYER_NONE;
     
     // A list of valid moves given any configuration.
     // TODO investigate SparseBooleanArray.
@@ -61,19 +60,19 @@ public abstract class Piece {
     }
     
     /**
-     * Sets the color ID of the piece.
-     * @param color the color ID to use for this piece.
+     * Sets the player ID of the piece.
+     * @param player the player ID to use for this piece.
      */
-    public void setColor(int color) {
-        this.color = color;
+    public void setPlayer(int player) {
+        this.player = player;
     }
     
     /**
-     * Gets the color ID of the piece.
-     * @return the color ID of the piece.
+     * Gets the player ID of the piece.
+     * @return the player ID of the piece.
      */
-    public int getColor() {
-        return this.color;
+    public int getPlayer() {
+        return this.player;
     }
     
     /**
@@ -89,10 +88,10 @@ public abstract class Piece {
     }
     
     /**
-     * Gets the color name of the piece.
-     * @return the color name of the piece.
+     * Gets the player name of the piece.
+     * @return the player name of the piece.
      */
-    public String getColorName() {
+    public String getPlayerName() {
         return RANK_NAMES[this.getRank()];
     }
     
@@ -101,12 +100,32 @@ public abstract class Piece {
      * @return the rank name of the piece.
      */
     public String getRankName() {
-        return COLOR_NAMES[this.getColor()];
+        return RANK_NAMES[this.getRank()];
+    }
+    
+    /**
+     * Gets the x-coordinate of the piece.
+     * @return the x-coordinate of the piece.
+     */
+    public int getX() {
+        // Notice how encapsulation allows us to define our
+        // own arbitrary rules for obtaining the x-coordinate?
+        return this.position.x;
+    }
+    
+    /**
+     * Gets the y-coordinate of the piece.
+     * @return the y-coordinate of the piece.
+     */
+    public int getY() {
+        // Notice how encapsulation allows us to define our
+        // own arbitrary rules for obtaining the y-coordinate?
+        return this.position.y;
     }
     
     @Override
     public String toString() {
-        return this.getColorName() + " " + this.getRankName() + "@(" + position.toString() + ")";
+        return this.getPlayerName() + " " + this.getRankName() + "@(" + position.toString() + ")";
     }
     
     public HashMap<Integer, Boolean> getValidMoves() {
@@ -127,6 +146,16 @@ public abstract class Piece {
         return map;
     }
     
+    /**
+     * Constructor for Piece.
+     * @param x the initial y-coordinate of the piece.
+     * @param y the initial x-coordinate of the piece.
+     * @param player the player ID.
+     */
+    public Piece(int x, int y, int player) {
+        moveTo(x, y);
+        setPlayer(player);
+    }
     /**
      * Constructor for Piece.
      * @param x the initial x-coordinate of the piece.

@@ -34,7 +34,7 @@ public class Rook extends Piece implements Renderable, Moveable {
     }
     
     @Override
-    public boolean canMoveTo(int x , int y) {
+    public boolean canMoveTo(int x , int y, Board board) {
         // TODO
         return true;
     }
@@ -42,6 +42,10 @@ public class Rook extends Piece implements Renderable, Moveable {
     @Override
     public int getRank() {
         return Piece.RANK_ROOK;
+    }
+    
+    public Rook(int x, int y, int player) {
+        super(x, y, player);
     }
     
     public Rook(int x, int y) {

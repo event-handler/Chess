@@ -1,6 +1,11 @@
 package com.bbdr.chess;
 
 public class Pawn extends Piece implements Moveable, Renderable {
+    /**
+     * Whether or not this piece has moved.
+     * This is used for the en passant move.  
+     */
+    public boolean hasMoved = false;
     
     /**
      * Returns whether the Pawn can move to relative coordinates (relX, relY).
@@ -36,13 +41,25 @@ public class Pawn extends Piece implements Moveable, Renderable {
         return false;
     }
     
-    // TO DO
-    // Allow for pawn promotion
-    
-      
     @Override
-    public boolean canMoveTo(int x, int y) {
-        // TODO
+    public boolean canMoveTo(int relX, int relY, Board board) {
+        // Handle the special case of en passant.
+        if (relX == 0 && relY == -2) {
+            // In the case of en passant, the validity
+            // of this move depends on the Pawn not having moved.
+            return (!this.hasMoved);
+        }
+        
+        // Handle the capture cases.
+        if (relY == -1) {
+            if (relX == -1 || relX == 1) {
+                // In case of capturing, the validity of
+                // this move depends on the tile being occupied.
+                return (board.isOccupied(this.position.x + relX, this.position.y + relY));
+            }
+        }
+        // If we reach this point, this is not a special move; it is
+        // valid as far as we are concerned right now.
         return true;
     }
     
@@ -54,6 +71,10 @@ public class Pawn extends Piece implements Moveable, Renderable {
     @Override
     public int getRank() {
         return Piece.RANK_PAWN;
+    }
+    
+    public Pawn(int x, int y, int player) {
+        super(x, y, player);
     }
     
     public Pawn(int x, int y) {

@@ -1,6 +1,8 @@
 package com.bbdr.chess;
 
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Gravity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
@@ -10,8 +12,10 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.graphics.Rect;
+import android.util.Log;
 
-public class ChessBoardView extends View {
+public class ChessBoardView extends ViewGroup {
     public static final int SIZE_TILE = 35;
     public static Matrix pieceTransMatrix = new Matrix();
     public static RectF rectSource;
@@ -38,6 +42,17 @@ public class ChessBoardView extends View {
 
     public Board board = null;
 
+
+    /** The amount of space used by children in the left gutter. */
+    private int mLeftWidth;
+
+    /** The amount of space used by children in the right gutter. */
+    private int mRightWidth;
+
+    /** These are used for computing child frames based on their gravity. */
+    private final Rect mTmpContainerRect = new Rect();
+    private final Rect mTmpChildRect = new Rect();
+    
     // Mock object for tile selection states.
     boolean[] tileSelectionStates = new boolean[64];
 
@@ -46,6 +61,15 @@ public class ChessBoardView extends View {
 
     public void setBoard(Board b) {
         this.board = b;
+        // Remove all views and add the board's views.
+        this.removeAllViews();
+        if (b == null) {
+            return;
+        }
+        for (int i = 0; i < board.pieces.length; i++) {
+            this.addView(createPieceViewForPiece(board.pieces[i]));
+            Log.d("chessfag", Integer.toString(this.getChildCount()));
+        }
     }
 
     /**
@@ -108,17 +132,12 @@ public class ChessBoardView extends View {
 
         this.tilePieces[toOffset] = this.tilePieces[fromOffset];
         this.tilePieces[fromOffset] = 0;
-        int left = getPixels(SIZE_TILE * fx);
-        int top = getPixels(SIZE_TILE * fy);
-        int right = getPixels(SIZE_TILE * (fx + 1));
-        int bottom = getPixels(SIZE_TILE * (fy + 1));
-        // this.invalidate(10, 10, 20, 20);
-        // this.invalidate(left, top, right, bottom);
         this.invalidate(getPixels(SIZE_TILE * tx), getPixels(SIZE_TILE * ty),
                 getPixels(SIZE_TILE * (tx + 1)),
                 getPixels(SIZE_TILE * (ty + 1)));
     }
 
+    // TODO not used anymore, remove.
     @Override
     public void onDraw(Canvas canvas) {
         if (this.isInEditMode()) {
@@ -330,10 +349,130 @@ public class ChessBoardView extends View {
         pieceTransMatrix = new Matrix();
 
     }
+    
+    protected Context _context = null;
+    protected ChessPieceView createPieceViewForPiece(Piece p) {
+        //ChessPieceView v = new ChessPieceView(this.getContext());
+        ChessPieceView v = new ChessPieceView(_context);
+        v.setX(0.0F);
+        v.setY(0.0F);
+        return v;
+    }
+    
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        final int count = getChildCount();
 
+        // These are the far left and right edges in which we are performing layout.
+        int leftPos = getPaddingLeft();
+        int rightPos = right - left - getPaddingRight();
+
+        // This is the middle region inside of the gutter.
+        final int middleLeft = leftPos + mLeftWidth;
+        final int middleRight = rightPos - mRightWidth;
+
+        // These are the top and bottom edges in which we are performing layout.
+        final int parentTop = getPaddingTop();
+        final int parentBottom = bottom - top - getPaddingBottom();
+
+        for (int i = 0; i < count; i++) {
+            final View child = getChildAt(i);
+            if (child.getVisibility() != GONE) {
+                final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+
+                final int width = 1024;//child.getMeasuredWidth();
+                final int height = 1024;//child.getMeasuredHeight();
+
+                // Compute the frame in which we are placing this child.
+                if (lp.position == LayoutParams.POSITION_LEFT) {
+                    mTmpContainerRect.left = leftPos + lp.leftMargin;
+                    mTmpContainerRect.right = leftPos + width + lp.rightMargin;
+                    leftPos = mTmpContainerRect.right;
+                } else if (lp.position == LayoutParams.POSITION_RIGHT) {
+                    mTmpContainerRect.right = rightPos - lp.rightMargin;
+                    mTmpContainerRect.left = rightPos - width - lp.leftMargin;
+                    rightPos = mTmpContainerRect.left;
+                } else {
+                    mTmpContainerRect.left = middleLeft + lp.leftMargin;
+                    mTmpContainerRect.right = middleRight - lp.rightMargin;
+                }
+                mTmpContainerRect.top = parentTop + lp.topMargin;
+                mTmpContainerRect.bottom = parentBottom - lp.bottomMargin;
+
+                // Use the child's gravity and size to determine its final
+                // frame within its container.
+                Gravity.apply(lp.gravity, width, height, mTmpContainerRect, mTmpChildRect);
+
+                // Place the child.
+                child.layout(mTmpChildRect.left, mTmpChildRect.top,
+                        mTmpChildRect.right, mTmpChildRect.bottom);
+            }
+        }
+    }
+
+
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new ChessBoardView.LayoutParams(getContext(), attrs);
+    }
+
+    @Override
+    protected LayoutParams generateDefaultLayoutParams() {
+        return new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+    }
+    
+    @Override
+    protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+        return new LayoutParams(p);
+    }
+
+    @Override
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+        return p instanceof LayoutParams;
+    }
+    
+
+    /**
+     * Custom per-child layout information.
+     */
+    public static class LayoutParams extends MarginLayoutParams {
+        /**
+         * The gravity to apply with the View to which these layout parameters
+         * are associated.
+         */
+        public int gravity = Gravity.TOP | Gravity.START;
+
+        public static int POSITION_MIDDLE = 0;
+        public static int POSITION_LEFT = 1;
+        public static int POSITION_RIGHT = 2;
+
+        public int position = POSITION_MIDDLE;
+
+        public LayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+
+            // Pull the layout param values from the layout XML during
+            // inflation.  This is not needed if you don't care about
+            // changing the layout behavior in XML.
+            //TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.CustomLayoutLP);
+            //gravity = a.getInt(R.styleable.CustomLayoutLP_android_layout_gravity, gravity);
+            //position = a.getInt(R.styleable.CustomLayoutLP_layout_position, position);
+            //a.recycle();
+        }
+
+        public LayoutParams(int width, int height) {
+            super(width, height);
+        }
+
+        public LayoutParams(ViewGroup.LayoutParams source) {
+            super(source);
+        }
+    }
+    
     public ChessBoardView(Context context) {
         // This constructor is used by our activity.
         super(context);
+        _context = context;
         // Don't set up the initial state if we are in edit/designer mode.
         if (!this.isInEditMode()) {
             // The init method will set variables we need that are not
@@ -345,6 +484,7 @@ public class ChessBoardView extends View {
     public ChessBoardView(Context context, AttributeSet attrs) {
         // This constructor is used by the UI designer.
         super(context, attrs);
+        _context = context;
         // Don't set up the initial state if we are in edit/designer mode.
         if (!this.isInEditMode()) {
             // The init method will set variables we need that are not
