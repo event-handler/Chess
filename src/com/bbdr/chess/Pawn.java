@@ -13,23 +13,26 @@ public class Pawn extends Piece implements Moveable, Renderable {
      * @param relY the y-coordinate relative to the piece.
      * @return true if the Pawn can move to this relative location.
      */
-        
     public boolean isValidMove(int relX, int relY){
         // Valid moves for the Pawn:
-        // (1)North, (2)2 squares North, (3)NorthEast
-        // (4)NorthWest, (5)En Passant
-       
-        if (relX == 0 && relY == -1) {           
-            return true;                
-        }    
+        // (1)North.
+        if (relX == 0 && relY == -1) {
+            return true;
+        }
+        // (2)En Passant
         if (relX == 0 && relY == -2) {
             return true;
-        }             
+        }
+        // (3)Capture Northeast, (4)Capture Northwest.
+        // Both of these are north movements, so relY must be -1. 
         if (relY == -1) {
+            // East is +1 and west is -1.
             if (relX == -1 || relX == 1) {
                 return true;
             }
-        }      
+        }
+        // The movement matched none of the valid patterns;
+        // this move is not valid.
         return false;
     }
     
