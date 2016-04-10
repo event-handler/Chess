@@ -76,6 +76,18 @@ public class Board {
         }
     }
     
+    public void move(Piece p, int x, int y) {
+        int index = this.findPieceID(p);
+        if (index == -1) {
+            // The piece does not exist. We're not moving something
+            // that isn't on the board. We should probably check
+            // that the inputs were valid.
+            return;
+        }
+        p.position.x = x;
+        p.position.y = y;
+    }
+    
     /**
      * Selects the piece at (x, y).
      * @param x the x-coordinate of the tile to select.
@@ -118,17 +130,6 @@ public class Board {
         int relativeX = (x - piece.getX());
         int relativeY = (y - piece.getY());
         
-        // But wait there's more. The north direction is always
-        // of a negative (relative) Y coordinate. This would mean
-        // pawns move backward for one of the players. We need to
-        // flip the board's perspective based on who is playing.
-        // Kings have a similar behavior with the King-/Queenside
-        // castling.
-        // Flip the board based on perspective.
-        // The standard chess board is NOT symmetrical about the x-axis.
-        //relativeX = (piece.getPlayer() == Piece.PLAYER_BLACK ? -1 : 1) * relativeX;
-        relativeY = (piece.getPlayer() == Piece.PLAYER_BLACK ? -1 : 1) * relativeY;
-        
         // Test if the piece can move to this position
         // in any board configuration.
         if (!piece.isValidMove(relativeX, relativeY)) {
@@ -138,7 +139,7 @@ public class Board {
         // This move is valid in some configuration, but we need to check for
         // our current configuration.
         if (piece.canMoveTo(relativeX, relativeY, this)) {
-            
+            return true;
         }
         return false;
     }

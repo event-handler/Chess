@@ -18,7 +18,12 @@ public class Pawn extends Piece implements Moveable, Renderable {
      * @param relY the y-coordinate relative to the piece.
      * @return true if the Pawn can move to this relative location.
      */
-    public boolean isValidMove(int relX, int relY){
+    public boolean isValidMove(int relX, int relY) {
+        // The pawn can only advance. For this, we need to rotate
+        // the perspective depending on who is playing.
+        // The board is only symmetrical about the x-axis.
+        relY = (getPlayer() == PLAYER_BLACK ? -1 : 1) * relY;
+        
         // Valid moves for the Pawn:
         // (1)North.
         if (relX == 0 && relY == -1) {
@@ -43,6 +48,14 @@ public class Pawn extends Piece implements Moveable, Renderable {
     
     @Override
     public boolean canMoveTo(int relX, int relY, Board board) {
+        // The pawn can only advance. For this, we need to rotate
+        // the perspective depending on who is playing.
+        // The board is only symmetrical about the x-axis.
+        int factorRelY = (getPlayer() == PLAYER_BLACK ? -1 : 1);
+        
+        // Apply the perspective factor to rotate.
+        relY = factorRelY * relY;
+        
         // Handle the special case of en passant.
         if (relX == 0 && relY == -2) {
             // In the case of en passant, the validity
@@ -55,7 +68,9 @@ public class Pawn extends Piece implements Moveable, Renderable {
             if (relX == -1 || relX == 1) {
                 // In case of capturing, the validity of
                 // this move depends on the tile being occupied.
-                return (board.isOccupied(this.position.x + relX, this.position.y + relY));
+                // NOTE that we use the original input for relY here.
+                // The board is not actually rotated!
+                return (board.isOccupied(this.position.x + relX, this.position.y + relY * factorRelY));
             }
         }
         // If we reach this point, this is not a special move; it is

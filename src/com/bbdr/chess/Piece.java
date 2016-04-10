@@ -169,6 +169,7 @@ public abstract class Piece {
         moveTo(x, y);
         setPlayer(player);
     }
+    
     /**
      * Constructor for Piece.
      * @param x the initial x-coordinate of the piece.
