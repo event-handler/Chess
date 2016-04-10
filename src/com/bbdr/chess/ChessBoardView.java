@@ -305,6 +305,8 @@ public class ChessBoardView extends ViewGroup {
             init();
         }
     }
+    
+    
 
     public ChessBoardView(Context context, AttributeSet attrs) {
         // This constructor is used by the UI designer.
