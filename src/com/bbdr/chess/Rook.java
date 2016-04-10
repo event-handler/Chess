@@ -23,8 +23,6 @@ public class Rook extends Piece implements Renderable, Moveable {
             // If relX == relY then both are 0. Thus, the validity
             // of this move depends on relX NOT being equal to relY.
             return (relX != relY);
-            
-            if (relX ==0 || relY == -1)
         }
         // If we've reached this point, this move is not valid.
         return false;

@@ -81,7 +81,8 @@ public class ChessActivity extends Activity {
         board.add(new Pawn(7, 6, Piece.PLAYER_WHITE));
         // Row 4.
         board.add(new Rook(0, 7, Piece.PLAYER_WHITE));
-        board.add(new Knight(1, 7, Piece.PLAYER_WHITE));
+        //board.add(new Knight(1, 7, Piece.PLAYER_WHITE));
+        board.add(new Knight(5, 3, Piece.PLAYER_WHITE));
         board.add(new Bishop(2, 7, Piece.PLAYER_WHITE));
         board.add(new Queen(3, 7, Piece.PLAYER_WHITE));
         board.add(new King(4, 7, Piece.PLAYER_WHITE));
