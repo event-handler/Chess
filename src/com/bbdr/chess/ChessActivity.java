@@ -13,7 +13,11 @@ import android.util.Log;
 public class ChessActivity extends Activity {
     private RelativeLayout.LayoutParams refLayoutParams;
     
+    // View
     private ChessBoardView boardView = null;
+    
+    // Model
+    private Board board = null;
     
     //public final int SIZE_TILE = getPixels(35);
     public final int SIZE_TILE = 35;
@@ -29,22 +33,69 @@ public class ChessActivity extends Activity {
         return (int)(px / getResources().getDisplayMetrics().density);
     }
     
+    protected void startGame() {
+        // Create the board.
+        board = new Board();
+        // Row 1.
+        board.add(new Rook(0, 0, Piece.PLAYER_BLACK));
+        board.add(new Knight(1, 0, Piece.PLAYER_BLACK));
+        board.add(new Bishop(2, 0, Piece.PLAYER_BLACK));
+        board.add(new Queen(3, 0, Piece.PLAYER_BLACK));
+        board.add(new King(4, 0, Piece.PLAYER_BLACK));
+        board.add(new Bishop(5, 0, Piece.PLAYER_BLACK));
+        board.add(new Knight(6, 0, Piece.PLAYER_BLACK));
+        board.add(new Rook(7, 0, Piece.PLAYER_BLACK));
+        // Row 2.
+        board.add(new Pawn(0, 1, Piece.PLAYER_BLACK));
+        board.add(new Pawn(1, 1, Piece.PLAYER_BLACK));
+        board.add(new Pawn(2, 1, Piece.PLAYER_BLACK));
+        board.add(new Pawn(3, 1, Piece.PLAYER_BLACK));
+        board.add(new Pawn(4, 1, Piece.PLAYER_BLACK));
+        board.add(new Pawn(5, 1, Piece.PLAYER_BLACK));
+        board.add(new Pawn(6, 1, Piece.PLAYER_BLACK));
+        board.add(new Pawn(7, 1, Piece.PLAYER_BLACK));
+        // Row 3.
+        board.add(new Pawn(0, 6, Piece.PLAYER_WHITE));
+        board.add(new Pawn(1, 6, Piece.PLAYER_WHITE));
+        board.add(new Pawn(2, 6, Piece.PLAYER_WHITE));
+        board.add(new Pawn(3, 6, Piece.PLAYER_WHITE));
+        board.add(new Pawn(4, 6, Piece.PLAYER_WHITE));
+        board.add(new Pawn(5, 6, Piece.PLAYER_WHITE));
+        board.add(new Pawn(6, 6, Piece.PLAYER_WHITE));
+        board.add(new Pawn(7, 6, Piece.PLAYER_WHITE));
+        // Row 4.
+        board.add(new Rook(0, 7, Piece.PLAYER_WHITE));
+        board.add(new Knight(1, 7, Piece.PLAYER_WHITE));
+        board.add(new Bishop(2, 7, Piece.PLAYER_WHITE));
+        board.add(new Queen(3, 7, Piece.PLAYER_WHITE));
+        board.add(new King(4, 7, Piece.PLAYER_WHITE));
+        board.add(new Bishop(5, 7, Piece.PLAYER_WHITE));
+        board.add(new Knight(6, 7, Piece.PLAYER_WHITE));
+        board.add(new Rook(7, 7, Piece.PLAYER_WHITE));
+    }
+    
     protected void init() {
         refLayoutParams = new RelativeLayout.LayoutParams(getPixels(SIZE_TILE), getPixels(SIZE_TILE));
         
-        King k = new King();
-        for (int x = -7; x <= 7; x++) {
-            for (int y = -7; y <= 7; y++) {
-                if (k.isValidMove(x, y)) {
-                    Log.d("chessfag", "(" + x + ", " + y + ") : valid");
-                }
-            }
-        }
+        // Test Pawn.
+        PieceMovementTest.testValidMovements(new Pawn());
+        // Test King.
+        PieceMovementTest.testValidMovements(new King());
+        // Test Rook.
+        PieceMovementTest.testValidMovements(new Rook());
+        // Test Bishop
+        PieceMovementTest.testValidMovements(new Bishop());
+        // Test Queen
+        PieceMovementTest.testValidMovements(new Queen());
+        // Test Knight
+        PieceMovementTest.testValidMovements(new Queen());
+        
         // Create the board view dynamically.
         //RelativeLayout relLayout = (RelativeLayout)findViewById(R.id.chessboardLayout);
         
         // Set the board view.
         boardView = (ChessBoardView)findViewById(R.id.chessboardView);
+        boardView.setBoard(board);
         //boardView = new ChessBoardView(this);
         //relLayout.addView(boardView, new RelativeLayout.LayoutParams(refLayoutParams));
         
@@ -82,6 +133,7 @@ public class ChessActivity extends Activity {
         setContentView(R.layout.activity_chess);
         
         // Initialize the activity's vars.
+        startGame();
         init();
     }
 
