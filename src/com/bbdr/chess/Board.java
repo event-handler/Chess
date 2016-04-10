@@ -76,16 +76,22 @@ public class Board {
         }
     }
     
-    public void move(Piece p, int x, int y) {
-        int index = this.findPieceID(p);
+    /**
+     * Moves the piece to the coordinates (x, y).
+     * @param piece the piece to move
+     * @param x the x-coordinate to move the piece to.
+     * @param y the y-coordinate to move the piece to.
+     */
+    public void move(Piece piece, int x, int y) {
+        int index = this.findPieceID(piece);
         if (index == -1) {
             // The piece does not exist. We're not moving something
             // that isn't on the board. We should probably check
             // that the inputs were valid.
             return;
         }
-        p.position.x = x;
-        p.position.y = y;
+        piece.position.x = x;
+        piece.position.y = y;
     }
     
     /**
@@ -116,6 +122,7 @@ public class Board {
     public boolean isOccupied(int x, int y) {
         return (get(x, y) != null);
     }
+    
     /**
      * Checks if (x, y) is occupied by a piece matching a certain fingerprint.
      * @param x the x-coordinate to check.

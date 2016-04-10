@@ -11,35 +11,51 @@ import android.view.MotionEvent;
 import android.util.Log;
 
 public class ChessActivity extends Activity {
-    private RelativeLayout.LayoutParams refLayoutParams;
-
-    // View
+    
+    /** Contains the View for the chess board. */
     private ChessBoardView boardView = null;
 
-    // Model
+    /** Contains the Model for the chess board. */
     private Board board = null;
 
-    // public final int SIZE_TILE = getPixels(35);
+    /** The size of a tile, in density pixels (dp). */
     public final int SIZE_TILE = 35;
 
+    /**
+     * Gets the pixel size for the specified density pixels.
+     * @param dp the density pixels to convert to pixels.
+     * @return the pixels represented by the density pixels.
+     */
     protected int getPixels(int dp) {
         // Multiply dp by the density, which is provided
         // by the resources DisplayMetrics.
         return (int) (getResources().getDisplayMetrics().density * dp);
     }
 
+    /**
+     * Gets the density pixels for the specified pixels.
+     * @param px the pixels to convert to density pixels.
+     * @return the density pixels represented by the pixels.
+     */
     protected int getDp(int px) {
         // Divide px by the density, which is provided
         // by the resources DisplayMetrics.
         return (int) (px / getResources().getDisplayMetrics().density);
     }
 
+    /**
+     * Clears the current selected tile.
+     */
     protected void clearCurrentSelection() {
         if (this.board != null) {
             this.board.selected = null;
         }
     }
 
+    /**
+     * Selects a piece, to activate move suggestion and allow piece movement.
+     * @param piece the piece to select.
+     */
     protected void setSelected(Piece piece) {
         if (this.board != null) {
             this.board.selected = piece;
@@ -49,6 +65,9 @@ public class ChessActivity extends Activity {
         }
     }
 
+    /**
+     * Creates the initial board layout.
+     */
     protected void startGame() {
         // Create the board.
         board = new Board();
@@ -81,8 +100,8 @@ public class ChessActivity extends Activity {
         board.add(new Pawn(7, 6, Piece.PLAYER_WHITE));
         // Row 4.
         board.add(new Rook(0, 7, Piece.PLAYER_WHITE));
-        //board.add(new Knight(1, 7, Piece.PLAYER_WHITE));
-        board.add(new Knight(5, 3, Piece.PLAYER_WHITE));
+        board.add(new Knight(1, 7, Piece.PLAYER_WHITE));
+        //board.add(new Knight(5, 3, Piece.PLAYER_WHITE));
         board.add(new Bishop(2, 7, Piece.PLAYER_WHITE));
         board.add(new Queen(3, 7, Piece.PLAYER_WHITE));
         board.add(new King(4, 7, Piece.PLAYER_WHITE));
@@ -91,25 +110,25 @@ public class ChessActivity extends Activity {
         board.add(new Rook(7, 7, Piece.PLAYER_WHITE));
     }
 
+    /**
+     * Initializes the Activity.
+     */
     protected void init() {
-        refLayoutParams = new RelativeLayout.LayoutParams(getPixels(SIZE_TILE),
-                getPixels(SIZE_TILE));
-
-        // Test Pawn.
+        // Test Pawn movement.
         PieceMovementTest.testValidMovements(new Pawn());
-        // Test King.
+        // Test King movement.
         PieceMovementTest.testValidMovements(new King());
-        // Test Rook.
+        // Test Rook movement.
         PieceMovementTest.testValidMovements(new Rook());
-        // Test Bishop
+        // Test Bishop movement.
         PieceMovementTest.testValidMovements(new Bishop());
-        // Test Queen
+        // Test Queen movement.
         PieceMovementTest.testValidMovements(new Queen());
-        // Test Knight
+        // Test Knight movement.
         PieceMovementTest.testValidMovements(new Queen());
 
         // Set the board view.
-        boardView = (ChessBoardView) findViewById(R.id.chessboardView);
+        boardView = (ChessBoardView)findViewById(R.id.chessboardView);
         boardView.setBoard(board);
         
         // On touch listener for Relative layouts

@@ -4,27 +4,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Gravity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.graphics.Rect;
-import android.util.Log;
 
 public class ChessBoardView extends ViewGroup {
     public static final int SIZE_TILE = 35;
-    public static RectF rectSource = new RectF();
-    public static RectF rectDestination = new RectF();
-    public static Paint paintHighlightContext;
-    public static Paint paintHighlightTargetContext;
-
-    public int selectionTarget = -1;
-
-    protected static Bitmap[] bitmaps = new Bitmap[13];
+    public static final RectF rectSource = new RectF();
+    public static final RectF rectDestination = new RectF();
+    public static final Paint paintHighlightContext = new Paint();
+    public static final Paint paintHighlightTargetContext = new Paint();
     
     public Board board = null;
 
@@ -45,12 +36,13 @@ public class ChessBoardView extends ViewGroup {
     int[] tilePieces = new int[64];
 
     public void updateValidMoves() {
-        Board b = this.board;
-        Moveable p = (Moveable)b.selected;
+        if (this.board == null) {
+            return;
+        }
+        Moveable p = (Moveable)this.board.selected;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                this.tileSelectionStates[Position.getAbsoluteOffset(x, y)] = (p != null && b.pieceCanMoveTo(p, x, y));
-                Log.d("chessfagstates", "" + x + ", " + y + " : " + (this.tileSelectionStates[Position.getAbsoluteOffset(x, y)]));
+                this.tileSelectionStates[Position.getAbsoluteOffset(x, y)] = (p != null && this.board.pieceCanMoveTo(p, x, y));
             }
         }
         this.invalidate();
@@ -70,14 +62,14 @@ public class ChessBoardView extends ViewGroup {
         this.invalidate();
     }
     
-    public boolean isSelected(int x, int y) {
-        return (tileSelectionStates[Position.getAbsoluteOffset(x, y)]);
-    }
-
     protected int getPixels(int dp) {
         // Multiply dp by the density, which is provided
         // by the resources DisplayMetrics.
         return (int) (getResources().getDisplayMetrics().density * dp);
+    }
+
+    public boolean isSelected(int x, int y) {
+        return (tileSelectionStates[Position.getAbsoluteOffset(x, y)]);
     }
 
     public boolean isSelectionTarget(int x, int y) {
@@ -160,12 +152,10 @@ public class ChessBoardView extends ViewGroup {
 
     public void init() {
         // Paint context for highlighted tiles.
-        paintHighlightContext = new Paint();
         paintHighlightContext.setColor(0x99ffd700);
         paintHighlightContext.setStyle(Paint.Style.FILL);
 
         // Paint context for selection target tile.
-        paintHighlightTargetContext = new Paint();
         paintHighlightTargetContext.setColor(0xc0ffd700);
         paintHighlightTargetContext.setStyle(Paint.Style.FILL);
     }

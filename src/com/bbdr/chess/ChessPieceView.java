@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
-import android.util.Log;
 
 public class ChessPieceView extends View {
     
@@ -20,16 +19,14 @@ public class ChessPieceView extends View {
     * (Queen, King, etc.) depending on the View's state.
     */
     public static final int SIZE_TILE = 35;
-    //protected static Bitmap[] bitmaps = new Bitmap[13];
-    //protected static Bitmap[] bitmaps = new Bitmap[Piece.getFingerprint(Piece.RANK_KING, Piece.PLAYER_BLACK)];
-    protected static Bitmap[] bitmaps = new Bitmap[200];
+    protected static Bitmap[] bitmaps = new Bitmap[Piece.getFingerprint(Piece.RANK_MAXVAL, Piece.PLAYER_MAXVAL) + 1];
     
     protected static final Matrix pieceTransMatrix = new Matrix();
     protected static final RectF rectSource = new RectF();
     protected static final RectF rectDestination = new RectF();
 
     // the view for a chess piece
-    public int pieceID = -1;
+    protected int pieceID = -1;
 
     @Override
     public void onDraw(Canvas canvas) {
@@ -37,17 +34,25 @@ public class ChessPieceView extends View {
         if (this.isInEditMode()) {
             return;
         }
-        // We don't want to do anything if the piece ID
-        // does not map to a Bitmap.
+        // We don't want to do anything if the piece ID does
+        // not map to a Bitmap. Otherwise, uh, exception.
         if (pieceID == -1 || bitmaps.length < pieceID || bitmaps[pieceID] == null) {
+            // This should NOT have happened.
+            // It's probably Bailey's fault.
+            // Blame him if you cannot figure it out.
+            // Oh. Can't throw exceptions in this method.
+            //throw new BaileysFaultException("You done fucked up");
             return;
         }
+        
         // Set the rectangle that we are drawing to.
         rectDestination.set(0F, 0F, this.getMeasuredWidth(), this.getMeasuredHeight());
+        
         // Construct the matrix that transforms the Bitmap into our tile area.
         pieceTransMatrix.setRectToRect(rectSource, rectDestination,
                 Matrix.ScaleToFit.END);
-        // Draw the bitmap to the canvas according to the transform matrix.
+        
+        // Draw the bitmap to the canvas according to the transformation matrix.
         canvas.drawBitmap(bitmaps[pieceID], pieceTransMatrix, null);
     }
 
@@ -64,7 +69,6 @@ public class ChessPieceView extends View {
     
     public void setPiece(Piece piece) {
         this.setSpriteID(piece.getFingerprint());
-        //this.setSpriteID(piece.getSpriteID());
     }
     
     public void init() {
