@@ -1,5 +1,6 @@
 package com.bbdr.chess;
 
+
 public class Knight extends Piece implements Renderable, Moveable {
     
     /**
@@ -15,28 +16,20 @@ public class Knight extends Piece implements Renderable, Moveable {
      */
     
     public boolean isValidMove(int relX, int relY){
-           
-        if (relY == -2) {
-            if (relX == -1 || relX ==  1 ) {
+        
+        // Get the absolute values for relX and relY
+        relY = Math.abs(relY);
+        relX = Math.abs(relX);
+        
+        // Valid moves for the Knight:
+        if (relX == 2 || relY == 2) {
+            if (relX == 1 || relY == 1) {
                 return true;
             }
-        }
-        if (relX == 2) {
-            if(relY == -1 || relY == 1)
-                return true;
-        }
-        if (relY == 2) {
-            if(relX == -1 || relX == 1)
-                return true;
-        }
-        if (relX == -2) {
-            if(relY == -1 || relY == 1)
-                return true;
         }
         // The movement matched none of the valid patterns;
         // this move is not valid.
         return false;
-       
     }
    
     @Override
