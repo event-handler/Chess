@@ -32,11 +32,13 @@ public class King extends Piece implements Moveable, Renderable {
         // King- and Queen-side Castling are both horizontal moves.
         // So relY must be 0.
         if (relY == 0) {
-            if (relX == -2 || relX == 2) {
+            // Because the board is not symmetrical about the y-axis,
+            // there are only two valid moves: x = -3 and x = +2
+            if (relX == 2) {
                 // Kingside castling.
                 return true;
             }
-            if (relX == -3 || relX == 3) {
+            if (relX == -3) {
                 // Queenside castling.
                 return true;
             }

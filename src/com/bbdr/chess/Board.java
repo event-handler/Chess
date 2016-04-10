@@ -116,6 +116,17 @@ public class Board {
     public boolean isOccupied(int x, int y) {
         return (get(x, y) != null);
     }
+    /**
+     * Checks if (x, y) is occupied by a piece matching a certain fingerprint.
+     * @param x the x-coordinate to check.
+     * @param y the y-coordinate to check.
+     * @param fingerprint the fingerprint to test against.
+     * @return true if the position (x, y) is occupied by a piece matching the fingerprint.
+     */
+    public boolean isOccupiedBy(int x, int y, int fingerprint) {
+        Piece p = get(x, y);
+        return p != null && p.matches(fingerprint);
+    }
     
     /**
      * Determines if a piece can move to (x, y).
@@ -138,9 +149,13 @@ public class Board {
         }
         // This move is valid in some configuration, but we need to check for
         // our current configuration.
-        if (piece.canMoveTo(relativeX, relativeY, this)) {
-            return true;
+        if (!piece.canMoveTo(relativeX, relativeY, this)) {
+            return false;
         }
-        return false;
+        // Check that the tile is not occupied by the player's piece. 
+        if (this.isOccupiedBy(x, y, Piece.getFingerprint(Piece.PLAYER_NONE, piece.getPlayer()))) {
+            return false;
+        }
+        return true;
     }
 }

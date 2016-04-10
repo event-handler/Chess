@@ -1,35 +1,41 @@
 package com.bbdr.chess;
 
 import java.util.HashMap;
+import android.util.Log;
 
 public abstract class Piece {
-    public static final int PLAYER_WHITE = 0;
-    public static final int PLAYER_BLACK = 1;
+    public static final int PLAYER_NONE = 0;
+    public static final int PLAYER_WHITE = 1;
+    public static final int PLAYER_BLACK = 2;
+    // Max case.
+    public static final int PLAYER_MAXVAL = PLAYER_BLACK;
     // Default case.
     public static final int PLAYER_DEFAULT = PLAYER_WHITE;
-    // Number of bits for PLAYER = log2(max_player_value)
-    public static final int BITS_PLAYER = (int)Math.ceil(Math.log10(PLAYER_BLACK + 1) / Math.log10(2));
+    // Number of bits for PLAYER = log2(max_player_value + 1)
+    public static final int BITS_PLAYER = (int)Math.ceil(Math.log10(PLAYER_MAXVAL + 1) / Math.log10(2));
     
-    public static final int RANK_PAWN = 0;
-    public static final int RANK_ROOK = 1;
-    public static final int RANK_KNIGHT = 2;
-    public static final int RANK_BISHOP = 3;
-    public static final int RANK_QUEEN = 4;
-    public static final int RANK_KING = 5;
+    public static final int RANK_NONE = 0;
+    public static final int RANK_PAWN = 1;
+    public static final int RANK_ROOK = 2;
+    public static final int RANK_KNIGHT = 3;
+    public static final int RANK_BISHOP = 4;
+    public static final int RANK_QUEEN = 5;
+    public static final int RANK_KING = 6;
+    // Max case.
+    public static final int RANK_MAXVAL = RANK_KING;
     // Default case.
     public static final int RANK_DEFAULT = RANK_PAWN;
+    
     // Number of bits for RANK = log2(max_rank_value)
-    public static final int BITS_RANK = (int)Math.ceil(Math.log10(RANK_KING + 1) / Math.log10(2));
-    // 6 valid ranks (Pawn, Rook, Knight, Bishop, Queen, King).
-    //   2 < log2(6) <= 3 -> 3 bits
-    // 2 valid ranks (White, Black).
-    //   1 == log2(2) -> 1 bit.
-    // Rank and player will be stored as: RRRP.
-    public int getSpriteID() {
-        return (getPlayer() | (getRank() << BITS_PLAYER)); 
-    }
+    public static final int BITS_RANK = (int)Math.ceil(Math.log10(RANK_MAXVAL + 1) / Math.log10(2));
+    // 7 valid ranks (None, Pawn, Rook, Knight, Bishop, Queen, King).
+    //   2 < log2(7) <= 3 -> 3 bits
+    // 3 valid ranks (None, White, Black).
+    //   1 < log2(3) <= 2 -> 2 bit.
+    // Rank and player will be stored as: RRRPP.
     
     public static final String[] RANK_NAMES = new String[] {
+        "N/A",
         "Pawn",
         "Rook",
         "Knight",
@@ -39,6 +45,7 @@ public abstract class Piece {
     };
     
     public static final String[] PLAYER_NAMES = new String[] {
+        "N/A",
         "White",
         "Black"
     };
@@ -134,6 +141,38 @@ public abstract class Piece {
         // Notice how encapsulation allows us to define our
         // own arbitrary rules for obtaining the y-coordinate?
         return this.position.y;
+    }
+    
+    /**
+     * Gets the fingerprint of the input rank and player.
+     * @param rank the piece's rank.
+     * @param player the piece's player.
+     * @return the fingerprint of the input rank and player.
+     */
+    public static int getFingerprint(int rank, int player) {
+        return (7 * (player % 3) + (rank % 7));
+    }
+    
+    /**
+     * Gets the piece's fingerprint. This can be used to test if
+     * a piece matches a certain rank and/or player.
+     * @return the fingerprint of the Piece.
+     */
+    public int getFingerprint() {
+        return getFingerprint(getRank(), getPlayer());
+    }
+    
+    /**
+     * Checks if the Piece matches an input fingerprint.
+     * @param fingerprint the fingerprint to test.
+     * @return true if the Piece matches the fingerprint.
+     */
+    public boolean matches(int fingerprint) {
+        int p = (int)(fingerprint / 7);
+        int pt = (int)(getFingerprint() / 7);
+        int r = (int)(fingerprint % 7);
+        int rt = (int)(getFingerprint() % 7);
+        return (p == 0 || p == pt) && (r == 0 || r == rt);
     }
     
     @Override

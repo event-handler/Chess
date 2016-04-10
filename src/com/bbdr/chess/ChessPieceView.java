@@ -21,7 +21,8 @@ public class ChessPieceView extends View {
     */
     public static final int SIZE_TILE = 35;
     //protected static Bitmap[] bitmaps = new Bitmap[13];
-    protected static Bitmap[] bitmaps = new Bitmap[31];
+    //protected static Bitmap[] bitmaps = new Bitmap[Piece.getFingerprint(Piece.RANK_KING, Piece.PLAYER_BLACK)];
+    protected static Bitmap[] bitmaps = new Bitmap[200];
     
     protected static final Matrix pieceTransMatrix = new Matrix();
     protected static final RectF rectSource = new RectF();
@@ -62,8 +63,8 @@ public class ChessPieceView extends View {
     }
     
     public void setPiece(Piece piece) {
-        Log.d("chessfag2", Integer.toString(piece.getSpriteID()));
-        this.setSpriteID(piece.getSpriteID());
+        this.setSpriteID(piece.getFingerprint());
+        //this.setSpriteID(piece.getSpriteID());
     }
     
     public void init() {
@@ -72,32 +73,31 @@ public class ChessPieceView extends View {
         // Store the bitmaps for later use.
         // TODO move this to another class. This is inefficient,
         // because it creates the array for each piece view.
-        bitmaps[(Piece.RANK_PAWN << Piece.BITS_PLAYER) | Piece.PLAYER_BLACK] =
+        bitmaps[Piece.getFingerprint(Piece.RANK_PAWN, Piece.PLAYER_BLACK)] =
                 BitmapFactory.decodeResource(r, R.drawable.pawn_black);
-        bitmaps[(Piece.RANK_ROOK << Piece.BITS_PLAYER) | Piece.PLAYER_BLACK] =
+        bitmaps[Piece.getFingerprint(Piece.RANK_ROOK, Piece.PLAYER_BLACK)] =
                 BitmapFactory.decodeResource(r, R.drawable.castle_black);
-        bitmaps[(Piece.RANK_KNIGHT << Piece.BITS_PLAYER) | Piece.PLAYER_BLACK] =
+        bitmaps[Piece.getFingerprint(Piece.RANK_KNIGHT, Piece.PLAYER_BLACK)] =
                 BitmapFactory.decodeResource(r, R.drawable.knight_black);
-        bitmaps[(Piece.RANK_BISHOP << Piece.BITS_PLAYER) | Piece.PLAYER_BLACK] =
+        bitmaps[Piece.getFingerprint(Piece.RANK_BISHOP, Piece.PLAYER_BLACK)] =
                 BitmapFactory.decodeResource(r, R.drawable.bishop_black);
-        bitmaps[(Piece.RANK_QUEEN << Piece.BITS_PLAYER) | Piece.PLAYER_BLACK] =
+        bitmaps[Piece.getFingerprint(Piece.RANK_QUEEN, Piece.PLAYER_BLACK)] =
                 BitmapFactory.decodeResource(r, R.drawable.queen_black);
-        bitmaps[(Piece.RANK_KING << Piece.BITS_PLAYER) | Piece.PLAYER_BLACK] =
+        bitmaps[Piece.getFingerprint(Piece.RANK_KING, Piece.PLAYER_BLACK)] =
                 BitmapFactory.decodeResource(r, R.drawable.king_black);
-        bitmaps[(Piece.RANK_PAWN << Piece.BITS_PLAYER) | Piece.PLAYER_WHITE] =
+        bitmaps[Piece.getFingerprint(Piece.RANK_PAWN, Piece.PLAYER_WHITE)] =
                 BitmapFactory.decodeResource(r, R.drawable.pawn_white);
-        bitmaps[(Piece.RANK_ROOK << Piece.BITS_PLAYER) | Piece.PLAYER_WHITE] =
+        bitmaps[Piece.getFingerprint(Piece.RANK_ROOK, Piece.PLAYER_WHITE)] =
                 BitmapFactory.decodeResource(r, R.drawable.castle_white);
-        bitmaps[(Piece.RANK_KNIGHT << Piece.BITS_PLAYER) | Piece.PLAYER_WHITE] =
+        bitmaps[Piece.getFingerprint(Piece.RANK_KNIGHT, Piece.PLAYER_WHITE)] =
                 BitmapFactory.decodeResource(r, R.drawable.knight_white);
-        bitmaps[(Piece.RANK_BISHOP << Piece.BITS_PLAYER) | Piece.PLAYER_WHITE] =
+        bitmaps[Piece.getFingerprint(Piece.RANK_BISHOP, Piece.PLAYER_WHITE)] =
                 BitmapFactory.decodeResource(r, R.drawable.bishop_white);
-        bitmaps[(Piece.RANK_QUEEN << Piece.BITS_PLAYER) | Piece.PLAYER_WHITE] =
+        bitmaps[Piece.getFingerprint(Piece.RANK_QUEEN, Piece.PLAYER_WHITE)] =
                 BitmapFactory.decodeResource(r, R.drawable.queen_white);
-        bitmaps[(Piece.RANK_KING << Piece.BITS_PLAYER) | Piece.PLAYER_WHITE] =
+        bitmaps[Piece.getFingerprint(Piece.RANK_KING, Piece.PLAYER_WHITE)] =
                 BitmapFactory.decodeResource(r, R.drawable.king_white);
-
-        sBitmap = bitmaps[1];
+        sBitmap = bitmaps[Piece.getFingerprint(Piece.RANK_PAWN, Piece.PLAYER_BLACK)];
         // The source rectangle does not change because we have
         // bitmaps of the same height and width.
         rectSource.set(0.0F, 0.0F, sBitmap.getWidth(), sBitmap.getHeight());
