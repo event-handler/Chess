@@ -32,7 +32,13 @@
             android:layout_height="280dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
-            />
+            >
+            
+            <com.bbdr.chess.ChessPieceView
+                android:id="@+id/chesspiece_pawn"
+                />
+        </com.bbdr.chess.ChessBoardView>
+        
     </RelativeLayout>
     
 </RelativeLayout>

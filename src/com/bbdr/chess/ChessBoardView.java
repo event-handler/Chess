@@ -36,6 +36,10 @@ public class ChessBoardView extends View {
     protected static final int ID_BQUEEN = 11;
     protected static final int ID_BKING = 12;
 
+    public Piece[] pieces = new Piece[8 * 4];
+    public ChessPieceView[] pieceViews = new ChessPieceView[8 * 4];
+    public Piece[] tiles = new Piece[8 * 8];
+    
     public Board board = null;
 
     // Mock object for tile selection states.
@@ -341,6 +345,8 @@ public class ChessBoardView extends View {
             init();
         }
     }
+    
+    
 
     public ChessBoardView(Context context, AttributeSet attrs) {
         // This constructor is used by the UI designer.
