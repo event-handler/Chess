@@ -56,12 +56,24 @@ public class Pawn extends Piece implements Moveable, Renderable {
         // Apply the perspective factor to rotate.
         relY = factorRelY * relY;
         
-        // Handle the special case of en passant.
-        if (relX == 0 && relY == -2) {
-            // In the case of en passant, the validity
-            // of this move depends on the Pawn not having moved.
-            return (!this.hasMoved);
+        
+        // TODO  En Passant - a special pawn capture, that can only 
+        //occur immediately after a pawn moves two ranks forward from its 
+        //starting position and an enemy pawn could have captured it had the 
+        //pawn moved only one square forward. Note that the capturing pawn must 
+        //be on its fifth rank prior to executing this maneuver.
+        
+        
+        // Do not allow the pawn to advance if the
+        // tile in front is occupied
+        if (relX == 0 && relY == -1) {
+            // check there is no other piece in front.
+            if (board.isOccupied(this.position.x + relX, this.position.y + relY * factorRelY)) {
+                // move is not allowed
+                return false;
+            }
         }
+       
         
         // Handle the capture cases.
         if (relY == -1) {
