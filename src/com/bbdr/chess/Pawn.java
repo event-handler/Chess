@@ -29,7 +29,7 @@ public class Pawn extends Piece implements Moveable, Renderable {
         if (relX == 0 && relY == -1) {
             return true;
         }
-        // (2)En Passant
+        // (2)North 2x
         if (relX == 0 && relY == -2) {
             return true;
         }
@@ -66,14 +66,13 @@ public class Pawn extends Piece implements Moveable, Renderable {
         
         // Do not allow the pawn to advance if the
         // tile in front is occupied
-        if (relX == 0 && relY == -1) {
+        if (relX == 0 && (relY == -1 || relY == -2)) {
             // check there is no other piece in front.
             if (board.isOccupied(this.position.x + relX, this.position.y + relY * factorRelY)) {
                 // move is not allowed
                 return false;
             }
         }
-       
         
         // Handle the capture cases.
         if (relY == -1) {
