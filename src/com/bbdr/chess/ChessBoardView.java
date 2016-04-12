@@ -35,6 +35,15 @@ public class ChessBoardView extends ViewGroup {
     // Initial tile states.
     int[] tilePieces = new int[64];
 
+    protected void update() {
+        int children = this.getChildCount();
+        ChessPieceView child;
+        for (int i = 0; i < children; i++) {
+            child = (ChessPieceView)this.getChildAt(i);
+            child.update();
+        }
+    }
+    
     public void updateValidMoves() {
         if (this.board == null) {
             return;

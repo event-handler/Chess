@@ -150,25 +150,27 @@ public class ChessActivity extends Activity {
 
                 // Make sure we aren't selecting the same piece.
                 piece = board.get(posX, posY);
-                // If no Piece was selected, clear the current selection.
-                if (piece == null) {
-                    // It's possible that nothing is selected already.
-                    if (board.selected == null) {
+                if (board.selected != null) {
+                    // A piece is already selected.
+                    // If they selected the same piece, deselect it.
+                    if (board.selected == piece) {
+                        clearCurrentSelection();
                         return true;
                     }
-                    // We're clearing the current selection.
+                    // If we can move to this position, move.
+                    if (board.pieceCanMoveTo((Moveable)board.selected, posX, posY)) {
+                        board.move(board.selected, posX, posY);
+                        boardView.update();
+                        clearCurrentSelection();
+                        return true;
+                    }
+                    // Clear the current selection if they did not move or deselect.
                     clearCurrentSelection();
-                    return true;
                 }
-
-                // A Piece has been selected.
-                // If the Piece was selected again, deselect it.
-                if (board.selected == piece) {
-                    clearCurrentSelection();
-                    return true;
+                // If the user touched a piece, select it.
+                if (piece != null) {
+                    setSelected(piece);
                 }
-                clearCurrentSelection();
-                setSelected(piece);
                 return true;
             }
         });

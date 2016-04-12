@@ -22,18 +22,33 @@ public class Board {
      */
     public Piece selected = null;
     
+    public void updatePosition(Piece p) {
+        this.set(p.position.x, p.position.y, p);
+    }
+    
+    public void updatePositions() {
+        Piece p;
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                p = this.get(x, y);
+                if (p != null) {
+                    if (p.position.x != x || p.position.y != y) {
+                        // Remove.
+                        this.set(x, y, null);
+                        updatePosition(p);
+                    }
+                }
+            }
+        }
+    }
+    
     /**
      * Adds a piece to the board. The board will use the Piece's
      * information such as x and y coordinates to decide where it goes.
      * @param p the piece to place on the board.
      */
     public void add(Piece p) {
-        int offset = p.position.getAbsoluteOffset();
-        if (tiles[offset] != null) {
-            // There is a piece at this offset.
-            // What should we do?
-        }
-        tiles[offset] = p;
+        updatePosition(p);
         pieces[pieceID++] = p;
     }
     
@@ -73,6 +88,8 @@ public class Board {
         if (tiles[offset] == p) {
             // Useless sanity-check.
             tiles[offset] = null;
+            p.position.x = -1;
+            p.position.y = -1;
         }
     }
     
@@ -83,15 +100,26 @@ public class Board {
      * @param y the y-coordinate to move the piece to.
      */
     public void move(Piece piece, int x, int y) {
+        Piece oldPiece;
         int index = this.findPieceID(piece);
+        int oldX = piece.position.x;
+        int oldY = piece.position.y;
         if (index == -1) {
             // The piece does not exist. We're not moving something
             // that isn't on the board. We should probably check
             // that the inputs were valid.
             return;
         }
+        // Get rid of any piece on this tile.
+        oldPiece = this.get(x, y);
+        if (oldPiece != null) {
+            remove(oldPiece);
+        }
+        this.set(oldX, oldY, null);
+        // Set the new position.
         piece.position.x = x;
         piece.position.y = y;
+        this.set(x, y, piece);
     }
     
     /**
@@ -111,6 +139,16 @@ public class Board {
      */
     public Piece get(int x, int y) {
         return tiles[Position.getAbsoluteOffset(x,  y)];
+    }
+    
+    /**
+     * Sets the Piece at (x, y).
+     * @param x the x-coordinate.
+     * @param y the y-coordinate.
+     * @param val the Piece to place at (x, y).
+     */
+    public void set(int x, int y, Piece val) {
+        tiles[Position.getAbsoluteOffset(x, y)] = val;
     }
     
     /**

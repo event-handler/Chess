@@ -24,10 +24,25 @@ public class ChessPieceView extends View {
     protected static final Matrix pieceTransMatrix = new Matrix();
     protected static final RectF rectSource = new RectF();
     protected static final RectF rectDestination = new RectF();
+    
+    protected Piece piece = null;
+    protected Position position = new Position(-1, -1);
 
     // the view for a chess piece
     protected int pieceID = -1;
 
+    public void update() {
+        if (this.pieceID != piece.getFingerprint()) {
+            this.setSpriteID(piece.getFingerprint());
+        }
+        if (this.position.x != piece.position.x || this.position.y != piece.position.y) {
+            if (piece.position.x == -1 && piece.position.y == -1) {
+                this.setSpriteVisibility(false);
+            }
+            this.setSpritePosition(piece.position);
+        }
+    }
+    
     @Override
     public void onDraw(Canvas canvas) {
 
@@ -56,6 +71,17 @@ public class ChessPieceView extends View {
         canvas.drawBitmap(bitmaps[pieceID], pieceTransMatrix, null);
     }
 
+    public void setSpriteVisibility(boolean val) {
+        this.setVisibility(val ? VISIBLE : GONE);
+    }
+    
+    public void setSpritePosition(Position pos) {
+        this.position.x = pos.x;
+        this.position.y = pos.y;
+        this.setX(getPixels(pos.x * SIZE_TILE));
+        this.setY(getPixels(pos.y * SIZE_TILE));
+    }
+    
     public void setSpriteID(int id) {
         // Check that the piece ID is even different.
         if (this.pieceID != id) {
@@ -68,7 +94,8 @@ public class ChessPieceView extends View {
     }
     
     public void setPiece(Piece piece) {
-        this.setSpriteID(piece.getFingerprint());
+        this.piece = piece;
+        this.update();
     }
     
     public void init() {
