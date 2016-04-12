@@ -6,8 +6,14 @@ public class Bishop extends Piece implements Renderable, Moveable {
     public boolean isValidMove(int relX, int relY) {
         // Valid moves for the Bishop:
         // (1)Diagonal
-        if (relX == relY || relX == relY * -1 || relX * -1 == relY) {
-            return true;
+        
+        // Get the absolute values for relX and relY
+        relX = Math.abs(relX);
+        relY = Math.abs(relY);
+        // Allow moving on the diagonal axes
+        if (relX == relY) {
+          //Check if bishop is in the same place
+            return (relX != 0);
         }
         return false;
     }
