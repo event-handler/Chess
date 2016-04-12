@@ -6,14 +6,12 @@ public class Bishop extends Piece implements Renderable, Moveable {
 	
 	
     @Override
-    public boolean isValidMove(int relX, int relY) {
-    	
-    	
+    public boolean isValidMove(int relX, int relY) {   
+		// Valid moves for the Bishop:
+		// (1)Diagonal
     	if(relX == relY || relX == relY*-1 || relX*-1 == relY){
     		return true;
-    	}
-
-    	
+    	} 	
     	return false;
     }
     @Override
@@ -41,6 +39,6 @@ public class Bishop extends Piece implements Renderable, Moveable {
     }
     
     public Bishop() {
-        super();
-    }
+		super();
+	}
 }
