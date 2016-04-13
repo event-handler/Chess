@@ -1,11 +1,29 @@
 package com.bbdr.chess;
 
+import java.util.HashMap;
+
 public class Pawn extends Piece implements Moveable, Renderable {
     /**
      * Whether or not this piece has moved.
-     * This is used for the en passant move.  
+     * This is used to determine if a pawn can advance two tiles.  
      */
     public boolean hasMoved = false;
+    
+    /** Cache for determining if a move is valid. */
+    public static final HashMap<Integer, Boolean> validMoves = new HashMap<Integer, Boolean>();
+    
+    /** Determines if we use the cache or not. */
+    private static boolean defaultUseCache = false;
+    
+    // First time this class is used, create a cache so that
+    // we can avoid more expensive computations.
+    static {
+        // Populate the valid moves cache.
+        generateValidMoves(validMoves, new Pawn());
+        
+        // We have populated the cache. Use this by default now.
+        defaultUseCache = true;
+    }
     
     /**
      * Returns whether the Pawn can move to relative coordinates (relX, relY).
@@ -16,13 +34,18 @@ public class Pawn extends Piece implements Moveable, Renderable {
      * used to build a cache.
      * @param relX the x-coordinate relative to the piece.
      * @param relY the y-coordinate relative to the piece.
+     * @param useCache whether or not we should use the valid moves cache.
      * @return true if the Pawn can move to this relative location.
      */
-    public boolean isValidMove(int relX, int relY) {
+    @Override
+    public boolean isValidMove(int relX, int relY, boolean useCache) {
+        if (useCache) {
+            return validMoves.get(Position.getRelativeOffset(relX, relY));
+        }
         // The pawn can only advance. For this, we need to rotate
         // the perspective depending on who is playing.
         // The board is only symmetrical about the x-axis.
-        relY = (getPlayer() == PLAYER_BLACK ? -1 : 1) * relY;
+        //relY = (getPlayer() == PLAYER_BLACK ? -1 : 1) * relY;
         
         // Valid moves for the Pawn:
         // (1)North.
@@ -44,6 +67,11 @@ public class Pawn extends Piece implements Moveable, Renderable {
         // The movement matched none of the valid patterns;
         // this move is not valid.
         return false;
+    }
+    
+    @Override
+    public boolean isValidMove(int relX, int relY) {
+        return this.isValidMove(relX, relY, defaultUseCache);
     }
     
     @Override

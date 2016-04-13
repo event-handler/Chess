@@ -1,7 +1,24 @@
 package com.bbdr.chess;
 
+import java.util.HashMap;
 
 public class Knight extends Piece implements Renderable, Moveable {
+    
+    /** Cache for determining if a move is valid. */
+    public static final HashMap<Integer, Boolean> validMoves = new HashMap<Integer, Boolean>();
+    
+    /** Determines if we use the cache or not. */
+    private static boolean defaultUseCache = false;
+    
+    // First time this class is used, create a cache so that
+    // we can avoid more expensive computations.
+    static {
+        // Populate the valid moves cache.
+        generateValidMoves(validMoves, new Knight());
+        
+        // We have populated the cache. Use this by default now.
+        defaultUseCache = true;
+    }
     
     /**
      * Returns whether the Knight can move to relative coordinates (relX, relY).
@@ -12,11 +29,13 @@ public class Knight extends Piece implements Renderable, Moveable {
      * used to build a cache.
      * @param relX the x-coordinate relative to the piece.
      * @param relY the y-coordinate relative to the piece.
+     * @param useCache whether or not we should use the valid moves cache.
      * @return true if the Knight can move to this relative location.
      */
-    
-    public boolean isValidMove(int relX, int relY){
-        
+    public boolean isValidMove(int relX, int relY, boolean useCache) {
+        if (useCache) {
+            return validMoves.get(Position.getRelativeOffset(relX, relY));
+        }
         // Get the absolute values for relX and relY
         relY = Math.abs(relY);
         relX = Math.abs(relX);
@@ -32,6 +51,11 @@ public class Knight extends Piece implements Renderable, Moveable {
         return false;
     }
    
+    @Override
+    public boolean isValidMove(int relX, int relY) {
+        return this.isValidMove(relX, relY, defaultUseCache);
+    }
+
     @Override
     public boolean canMoveTo(int relX, int relY, Board board) {   
         return true;

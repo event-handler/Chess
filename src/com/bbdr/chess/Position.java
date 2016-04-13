@@ -1,15 +1,28 @@
 package com.bbdr.chess;
 
 public class Position {
+    /** A chessboard's minimum position-x component. */
     public static final int MIN_X = 0;
-    public static final int MIN_Y = 0;
-    public static final int MAX_X = 7;
-    public static final int MAX_Y = 7;
-    // Derived from constants.
-    public static final int FACTOR_X = (1 + MAX_Y - MIN_Y);
-    public static final int FACTOR_Y = 1;
     
+    /** A chessboard's minimum position-y component. */
+    public static final int MIN_Y = 0;
+    
+    /** A chessboard's maximum position-x component. */
+    public static final int MAX_X = 7;
+    
+    /** A chessboard's maximum position-y component. */
+    public static final int MAX_Y = 7;
+    
+    /** The factor to multiply X by in obtaining the offset. */
+    private static final int FACTOR_X = (1 + MAX_Y - MIN_Y);
+    
+    /** The factor to multiply Y by in obtaining the offset. */
+    private static final int FACTOR_Y = 1;
+    
+    /** The x component. */
     public int x;
+    
+    /** The y component. */
     public int y;
     
     /**
@@ -49,6 +62,11 @@ public class Position {
         return getAbsoluteOffset(this.x, this.y);
     }
     
+    /**
+     * Constructor for Position.
+     * @param x the position x-component.
+     * @param y the position y-component.
+     */
     public Position(int x, int y) {
         this.x = x;
         this.y = y;

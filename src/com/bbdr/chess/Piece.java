@@ -1,72 +1,89 @@
 package com.bbdr.chess;
 
 import java.util.HashMap;
-import android.util.Log;
 
 public abstract class Piece {
+    /** Indicates that the Piece belongs to no player. This should
+     * never be used for pieces, but can be used to compare Pieces
+     * without considering player.
+     */
     public static final int PLAYER_NONE = 0;
-    public static final int PLAYER_WHITE = 1;
-    public static final int PLAYER_BLACK = 2;
-    // Max case.
-    public static final int PLAYER_MAXVAL = PLAYER_BLACK;
-    // Default case.
-    public static final int PLAYER_DEFAULT = PLAYER_WHITE;
-    // Number of bits for PLAYER = log2(max_player_value + 1)
-    public static final int BITS_PLAYER = (int)Math.ceil(Math.log10(PLAYER_MAXVAL + 1) / Math.log10(2));
     
+    /** Indicates that the Piece belongs to the first player (White). */
+    public static final int PLAYER_WHITE = 1;
+    
+    /** Indicates that the Piece belongs to the second player (Black). */
+    public static final int PLAYER_BLACK = 2;
+    
+    /** Maximum allowed Player value. */
+    public static final int PLAYER_MAXVAL = PLAYER_BLACK;
+    
+    /** The default player. */
+    public static final int PLAYER_DEFAULT = PLAYER_WHITE;
+    
+    /** Indicates that the Piece is of no rank. This hsould never
+     * be used for pieces, but can be used to compare Pieces
+     * without considering their rank.
+     */
     public static final int RANK_NONE = 0;
+    
+    /** Indicates that a Piece is of rank Pawn. */
     public static final int RANK_PAWN = 1;
+    
+    /** Indicates that a Piece is of rank Rook. */
     public static final int RANK_ROOK = 2;
+    
+    /** Indicates that a Piece is of rank Knight. */
     public static final int RANK_KNIGHT = 3;
+    
+    /** Indicates that a Piece is of rank Bishop. */
     public static final int RANK_BISHOP = 4;
+    
+    /** Indicates that a Piece is of rank Queen. */
     public static final int RANK_QUEEN = 5;
+    
+    /** Indicates that a Piece is of rank King. */
     public static final int RANK_KING = 6;
-    // Max case.
+    
+    /** Maximum allowed Rank value. */
     public static final int RANK_MAXVAL = RANK_KING;
-    // Default case.
+    
+    /** The default rank. */
     public static final int RANK_DEFAULT = RANK_PAWN;
     
-    // Number of bits for RANK = log2(max_rank_value)
-    public static final int BITS_RANK = (int)Math.ceil(Math.log10(RANK_MAXVAL + 1) / Math.log10(2));
-    // 7 valid ranks (None, Pawn, Rook, Knight, Bishop, Queen, King).
-    //   2 < log2(7) <= 3 -> 3 bits
-    // 3 valid ranks (None, White, Black).
-    //   1 < log2(3) <= 2 -> 2 bit.
-    // Rank and player will be stored as: RRRPP.
-    
+    /** The names of ranks. Each index corresponds to their Rank number. */
     public static final String[] RANK_NAMES = new String[] {
-        "N/A",
-        "Pawn",
-        "Rook",
-        "Knight",
-        "Bishop",
-        "Queen",
-        "King"
+        "N/A", "Pawn", "Rook", "Knight", "Bishop", "Queen", "King"
     };
     
+    /** The names of players. Each index corresponds to their Player number. */
     public static final String[] PLAYER_NAMES = new String[] {
-        "N/A",
-        "White",
-        "Black"
+        "N/A", "White", "Black"
     };
     
-    // Public fields.
-    
-    // Current position within the board it is contained in.
+    /** The Piece's current position within the board. */
     public final Position position = new Position(-1, -1);
     
-    // Piece's player name.
+    /** The Piece's player number. */
     public int player = PLAYER_DEFAULT;
-    
-    // A list of valid moves given any configuration.
-    // TODO investigate SparseBooleanArray.
-    public static HashMap<Integer, Boolean> validMoves;
     
     /**
      * Gets the rank ID of the piece.
      * @return the rank ID of the piece.
      */
     public abstract int getRank();
+    
+    /**
+     * Returns true if the move to relative coordinates (relX, relY) is valid.
+     * This method should be overridden for each subclass.
+     * @param relX the relative coordinate X.
+     * @param relY the relative coordinate Y.
+     * @param useCache whether or not the cache should be used.
+     * @return true if the piece can move to relative coordinates (relX, relY).
+     */
+    public boolean isValidMove(int relX, int relY, boolean useCache) {
+        return true;
+    }
     
     /**
      * Returns true if the move to relative coordinates (relX, relY) is valid.
@@ -180,22 +197,16 @@ public abstract class Piece {
         return this.getPlayerName() + " " + this.getRankName() + "@(" + position.toString() + ")";
     }
     
-    public HashMap<Integer, Boolean> getValidMoves() {
-        // Move list: given some coordinates (x, y) relative to
-        // this piece's position on the board, is there any
-        // configuration that such a move will be valid?
-        HashMap<Integer, Boolean> map = new HashMap<Integer, Boolean>();
-        // TODO MOVE COMMENT
-        // This static initializer builds a cache so that we don't
-        // need to call the isValidMove(x, y) every time a piece
-        // is selected etc.
+    /**
+     * Generates a cache of all valid moves for this Piece type.
+     */
+    public static void generateValidMoves(HashMap<Integer, Boolean> map, Piece p) {
         for (int x = -7; x <= 7; x++) {
             for (int y = -7; y <= 7; y++) {
                 // Test if this move is valid in any configuration.
-                map.put(Position.getRelativeOffset(x, y), isValidMove(x, y));
+                map.put(Position.getRelativeOffset(x, y), p.isValidMove(x, y, false));
             }
         }
-        return map;
     }
     
     /**
